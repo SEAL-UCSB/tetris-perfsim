@@ -1,0 +1,29 @@
+'''
+Created on Nov 14, 2018
+
+@author: shuangchenli
+'''
+
+from tetrisPerfSim import configs, perfModel
+
+#@liu
+def main():
+  hardwarePool = []
+  appPool = []
+  for selectHW in hardwarePool:
+    hardware = configs.DesignSpaceExploration(selectHW)
+    hardware.printConfig()
+    hardware.reset()
+    for selectAPP in appPool:
+      app = configs.Benchmarking(selectAPP)
+      for layer in app.layers:
+        perfModel.Sim(hardware, layer)
+        #hardware.reset()
+        #hardware.printResult(2)
+      hardware.printResult(2)
+      
+  
+if __name__ == '__main__':
+    main()
+    
+    
