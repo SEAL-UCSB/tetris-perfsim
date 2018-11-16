@@ -18,6 +18,12 @@ def DesignSpaceExploration(select): # input: int/string; output: components.Tetr
   # baseline-3: element sparse on blocked hardware, treate 1x1 as n-by-n
   tetriConfig = components.TetrisArch()
   # [TODO]:
+  numPE = 64
+  numMUL = 8 
+  # set peak throughput to be 512 Gops/sec, PE at 1 GHz frequency.
+  localBufSize = 32 # KB
+  globalBufSize = 16 # MB
+  globalBW = 1024 # byte/cycle. Need to validate againt CACTI
   return tetriConfig 
 
 # @liu: design the experiment: list the app
