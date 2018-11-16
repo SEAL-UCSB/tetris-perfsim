@@ -22,6 +22,19 @@ from tetrisPerfSim import scheduler, reorderEngine
 #@jilan
 def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), int
   # [TODO] calc reading DRAM, update statics in memory
+  # The dataAmount should indicate the number of bytes
+  # We assume that we only need read out a large amout of weights, and they are well organized 
+  
+  latency = dataAmount/memory.accessBW
+  energy = dataAmount/memory.width*memory.accessEnergy
+  
+  memory.totalLatency += latency
+  memory.numAccess += dataAmount/memory.width
+  memory.totalEnergy = memory.accessEnergy*memory.numAccess
+  memory.totalReadEnergy += memory.accessEnergy*memory.numAccess
+  
+  return (latency, energy)
+  
   assert(True)
 
 #@jilan
