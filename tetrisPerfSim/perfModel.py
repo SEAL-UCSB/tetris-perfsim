@@ -30,8 +30,9 @@ def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), int
   
   memory.totalLatency += latency
   memory.numAccess += dataAmount/memory.width
-  memory.totalEnergy = memory.accessEnergy*memory.numAccess
-  memory.totalReadEnergy += memory.accessEnergy*memory.numAccess
+  memory.totalEnergy += energy
+  memory.totalReadEnergy += energy
+  memory.totalEnergy += 
   
   return (latency, energy)
   
@@ -54,6 +55,25 @@ def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), int, boolean
 def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), int, boolean
   # [TODO] calc reading SRAM, update statics in memory
   # NOTE THAT this buffer is modeled simply by BW, assuming maximal bank parallelism and zero bank conflict
+  # We ignore the accumulation
+  if isREAD:
+    numRead = dataAmount/memory.width
+    latency = numRead*memory.readLatency
+    energy = numRead*memory.readEnergy
+    
+    memory.numRead += numRead
+    memory.totalReadLatency += latency
+    memory.totalReadEnergy += energy
+    memory.total
+    
+  
+    memory.totalLatency += latency
+    memory.numAccess += dataAmount/memory.width
+    memory.totalEnergy = memory.accessEnergy*memory.numAccess
+    memory.totalReadEnergy += memory.accessEnergy*memory.numAccess
+    
+  else:
+    
   assert(True)
 
 #@jilan  
