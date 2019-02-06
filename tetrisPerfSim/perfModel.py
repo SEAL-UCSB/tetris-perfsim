@@ -22,6 +22,20 @@ from tetrisPerfSim import scheduler, reorderEngine
 #@jilan
 def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), int
   # [TODO] calc reading DRAM, update statics in memory
+  # The dataAmount should indicate the number of bytes
+  # We assume that we only need read out a large amout of weights, and they are well organized 
+  
+  latency = dataAmount/memory.accessBW
+  energy = dataAmount/memory.width*memory.accessEnergy
+  
+  memory.totalLatency += latency
+  memory.numAccess += dataAmount/memory.width
+  memory.totalEnergy += energy
+  memory.totalReadEnergy += energy
+  memory.totalEnergy += 
+  
+  return (latency, energy)
+  
   assert(True)
 
 #@ling
@@ -42,6 +56,25 @@ def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), int, boolean
 def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), int, boolean
   # [TODO] calc reading SRAM, update statics in memory
   # NOTE THAT this buffer is modeled simply by BW, assuming maximal bank parallelism and zero bank conflict
+  # We ignore the accumulation
+  if isREAD:
+    numRead = dataAmount/memory.width
+    latency = numRead*memory.readLatency
+    energy = numRead*memory.readEnergy
+    
+    memory.numRead += numRead
+    memory.totalReadLatency += latency
+    memory.totalReadEnergy += energy
+    memory.total
+    
+  
+    memory.totalLatency += latency
+    memory.numAccess += dataAmount/memory.width
+    memory.totalEnergy = memory.accessEnergy*memory.numAccess
+    memory.totalReadEnergy += memory.accessEnergy*memory.numAccess
+    
+  else:
+    
   assert(True)
 
 #@jilan  

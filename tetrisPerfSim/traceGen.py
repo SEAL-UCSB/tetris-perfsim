@@ -8,16 +8,15 @@ it either (1) generate randomly given a sparse rate or (2) using the data dump f
 '''
 
 #@ling: maintain this module
-
-from cmath import sqrt
+import random
 
 class DataBlock():
   def __init__(self):
     self.blockSize = 0*0
     self.coordRow = 0
     self.coordCol = 0
-    self.indexRow = [0] * int(sqrt(self.blockSize))
-    self.indexCol = [0] * int(sqrt(self.blockSize))
+    self.indexRow = []
+    self.indexCol = []
 
 class Layer():
   def __init__(self):
@@ -28,6 +27,12 @@ class Layer():
     self.dataSource = '' #['synthatic','pytorch']
     self.dataWidth = 0 # BYTE
     self.name = ''
+    self.blockSizeH = 0  # how many input channels in a block
+    self.blockSizeW = 0  # how many output channels in a block
+    self.numBlockH = 0  # number of blocks in vertical direction
+    self.numBlockW = 0  # number of blocks in horizontal direction
+    self.cinShuffle = []
+    self.coutShuffle = []
     
     # data structure feed to reorderEngine
     self.numDataBlock = 0
@@ -43,6 +48,43 @@ class App():
 def SparseDataGen(layer):
   if(layer.dataSource == 'synthatic'):
     # [TODO]
+    # numBlock
+    layer.numBlockH = layer.value['Cin'] / layer.blockSizeH
+    layer.numBlockW = layer.value['Cout'] / layer.blockSizeW
+
+    # numDataBlock
+    layer.numDataBlock = int(layer.numBlockH * layer.numBlockW * layer.sparseRatio)
+
+    # cinShuffle & coutShuffle
+    layer.cinShuffle = [i for i in range(layer.value['Cin'])]
+    layer.coutShuffle = [i for i in range(layer.value['Cout'])]
+    random.shuffle(layer.cinShuffle)
+    random.shuffle(layer.coutShuffle)
+
+    # select blocks randomly
+    block_list = random.sample([i for i in range(layer.numBlockH * layer.numBlockW)], layer.numDataBlock)
+
+    # data
+    for i in range(layer.numDataBlock):
+      layer.data.append(DataBlock())
+
+      # block size
+      layer.data[i].blockSize = layer.blockSizeH * layer.blockSizeW
+
+      # coordRow & coordCol
+      layer.data[i].coordRow = block_list[i] // layer.numBlockW
+      layer.data[i].coordCol = block_list[i] % layer.numBlockW
+
+      # indexRow & indexCol
+      row_begin = layer.blockSizeH * layer.data[i].coordRow
+      row_end = layer.blockSizeH * (layer.data[i].coordRow + 1)
+      layer.indexRow = layer.cinShuffle[row_begin : row_end]
+
+      col_begin = layer.blockSizeW * layer.data[i].coordCol
+      col_end = layer.blockSizeW * (layer.data[i].coordCol + 1)
+      layer.indexCol = layer.coutShuffle[col_begin : col_end]
+
+
     assert(True)
   elif(layer.dataSource == 'pytorch'):
     # [TODO]
