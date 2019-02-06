@@ -24,13 +24,14 @@ def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), int
   # [TODO] calc reading DRAM, update statics in memory
   assert(True)
 
-#@jilan
+#@ling
 def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), int, boolean
   # [TODO] calc reading SRAM, update statics in memory
   if(memory.adrHashScheme == 'ideal'):
     # assume maximal bank parallelism zero bank conflict, i.e., no reordering overhead
     assert(True)
   elif(memory.adrHashScheme == 'modN'):
+    # NOTE THAT we could have a OOO-read/write queue here
     # NOTE THAT SRAM model need to consider multi-bank parallelsim and conflict stuff
     assert(True)
   else:
