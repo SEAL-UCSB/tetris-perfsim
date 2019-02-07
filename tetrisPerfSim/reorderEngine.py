@@ -10,7 +10,7 @@ generate the in-or-out fmap address according to the after-shuffle blocked weigh
 #@ling: maintain this module
 
 #@ling
-def AdrGen(datalist): # input: [traceGen.DataBlock()], output [int]
+def AdrGen(datalist): # input: [traceGen.DataBlock()], output list[int]
   adr = []
-  # [TODO]
+  # [TODO] @ling
   return adr

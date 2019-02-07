@@ -8,6 +8,7 @@ from tetrisPerfSim import configs, perfModel
 
 #@liu
 def main():
+  #[TODO] @liu: setup the pool
   hardwarePool = []
   appPool = []
   for selectHW in hardwarePool:
@@ -15,7 +16,7 @@ def main():
     hardware.printConfig()
     hardware.reset()
     for selectAPP in appPool:
-      app = configs.Benchmarking(selectAPP)
+      app = configs.Benchmarking(selectAPP, hardware)
       for layer in app.layers:
         perfModel.Sim(hardware, layer)
         #hardware.reset()

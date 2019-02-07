@@ -47,7 +47,6 @@ class App():
 # @ling    
 def SparseDataGen(layer):
   if(layer.dataSource == 'synthatic'):
-    # [TODO]
     # numBlock
     layer.numBlockH = layer.value['Cin'] / layer.blockSizeH
     layer.numBlockW = layer.value['Cout'] / layer.blockSizeW
@@ -83,11 +82,8 @@ def SparseDataGen(layer):
       col_begin = layer.blockSizeW * layer.data[i].coordCol
       col_end = layer.blockSizeW * (layer.data[i].coordCol + 1)
       layer.indexCol = layer.coutShuffle[col_begin : col_end]
-
-
-    assert(True)
   elif(layer.dataSource == 'pytorch'):
-    # [TODO]
+    # [TODO] @ling 
     assert(True)
   else:
     assert(False)
