@@ -6,4 +6,4 @@ Roofline model among on-chip memory, off-chip memory, NoC, and computing.
 
 Data shuffle overhead is modeled for multi-bank memory access with bank conflict.
 
-![Alt text](./doc/tetris.pdf?raw=true "Architecture and Simulator Overview")
+![Alt text](./doc/tetris.jpg?raw=true "Architecture and Simulator Overview")
