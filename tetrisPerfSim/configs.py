@@ -115,7 +115,7 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
   # [TODO]: @liu
   model_info = {}
   if select == 'vgg16':
-    with open('vgg.json', 'r') as f:
+    with open('configs/vgg.json', 'r') as f:
       model_info = json.load(f)['vgg16']
     app.name = select
     app.numLayer = 16
