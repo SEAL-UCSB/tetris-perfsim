@@ -40,13 +40,13 @@ def DesignSpaceExploration(select): # input: int/string; output: components.Tetr
     tetris.accBuf.resetStatus()
     tetris.resetStatus()
   elif select == 'dense':
-    tetris.setup()  #[TODO] @liu setup specific parameters
-    tetris.noc.setup()   #[TODO] @liu setup specific parameters
-    tetris.offMem.setup()   #[TODO] @liu setup specific parameters
-    tetris.fmapMem.setup()   #[TODO] @liu setup specific parameters
-    tetris.tile.setup()   #[TODO] @liu setup specific parameters
-    tetris.reorder.setup()   #[TODO] @liu setup specific parameters
-    tetris.accBuf.setup()   #[TODO] @liu setup specific parameters
+    tetris.setup('block-sparse', 64, 64, 'synthetic')
+    tetris.noc.setup(64, 2)   # 2 byte/cycle
+    tetris.offMem.setup()   # @Shuangchen Do we model DRAM?
+    tetris.fmapMem.setup(8, 1, 64*1024)
+    tetris.tile.setup(16, 2, 'INT', 256*2, 32*32*2, 256*2)   # BYTE
+    tetris.reorder.setup(64, 8)
+    tetris.accBuf.setup(32, 1, 32)
     tetris.noc.calcPPA()
     tetris.noc.resetStatus()
     tetris.offMem.calcPPA()  

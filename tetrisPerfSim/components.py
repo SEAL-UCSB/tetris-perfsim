@@ -288,7 +288,7 @@ class TetrisArch():
     assert(self.numTile == self.reorder.numParallelBlocks)
     assert(self.sparseBlockSize == self.reorder.sizeBlock)
 
-  def setup(self, _type = 'block-sparse', _numTile = 0, _sparseBlockSize = 0, _sparseSource = 'synthatic'):
+  def setup(self, _type = 'block-sparse', _numTile = 0, _sparseBlockSize = 0, _sparseSource = 'synthetic'):
     # purpose config
     self.type = _type # ['block-sparse', 'dense', 'element-sparse']
     # structure config

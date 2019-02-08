@@ -9,8 +9,8 @@ from tetrisPerfSim import configs, perfModel
 #@liu
 def main():
   #[TODO] @liu: setup the pool
-  hardwarePool = []
-  appPool = []
+  hardwarePool = ['dense']
+  appPool = ['vgg16']
   for selectHW in hardwarePool:
     hardware = configs.DesignSpaceExploration(selectHW)
     hardware.printConfig()
