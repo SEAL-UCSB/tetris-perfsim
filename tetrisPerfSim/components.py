@@ -17,25 +17,28 @@ class SRAM():
   # the performance is not merely modeled by numData/BW, 
   # instead, precisely model the bank parallelsim/conflict according the access adr
   # circuit PPA can be achieved from NVSIM/CACTI
+  
+  # Simulation is based on: fully-associative L2 CACHE in CACTI, 45nm technology
   def __init__(self, _numBank = 0, _widthPerBank = 0, _capacityPerBank = 0, _adrHashScheme = 'ideal', _reorderBufLen = 0):
     # structure config
-    self.numBank = _numBank
+    self.numBank = _numBank           
     self.widthPerBank = _widthPerBank # BYTE
     self.capacityPerBank = _capacityPerBank #BYTE
     self.width = self.numBank * self.widthPerBank # BYTE
-    self.capacity = self.numBank * self.capacityPerBank #BYTE
+    self.capacity = self.numBank * self.capacityPerBank # BYTE
     
     # other config
     self.adrHashScheme = _adrHashScheme # e.g., ['modN','ideal']
     self.reorderBufLen = _reorderBufLen # 0 length means in-order read
         
     # circuit PPA initialization 
-    self.area = 0 # um2
-    self.readLatency = 0 # ns
-    self.writeLatency = 0
-    self.readEnergy = 0
-    self.writeEnergy = 0
-    self.leakage = 0 #uw
+    self.area = 483662*_numBank # um2; is calculated by combanition of banks
+    # CACTI does not give write energy/time but access energy/time
+    self.readLatency = 0.2962*_numBank # ns
+    self.writeLatency = 0.2962*_numBank
+    self.readEnergy = 0.01967*_numBank
+    self.writeEnergy = 0.01967*_numBank
+    self.leakage = 14.6739*_numBank #uw
     
     # statics initialization
     self.numRead = 0
@@ -134,7 +137,8 @@ class Tile(): # a.k.a. PE
   # the circuit PPA comes from CHISEL verilog and the NVSIM/CACTI
   def __init__(self, _nMAC = 0, _widthMAC = 0, _dataType = 'INT', _capacityUnifiedBuffer = 0, _capacityAccumulator = 0, _capacityWeightFIFO = 0):
     # structure config
-    self.nMAC = _nMAC # need to be 4^n
+    # 16, 2, 'INT', 256*2, 32*32*2, 256*2
+    self.nMAC = _nMAC # need to be 4^n  - n^2?
     self.widthMAC = _widthMAC # BYTE
     self.dataType = _dataType # ['FP', 'INT']
     self.capacityUnifiedBuffer = _capacityUnifiedBuffer # unified buffer according to TPU
