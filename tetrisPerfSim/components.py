@@ -19,7 +19,7 @@ class SRAM():
   # circuit PPA can be achieved from NVSIM/CACTI
   
   # Simulation is based on: fully-associative L2 CACHE in CACTI, 45nm technology
-  def __init__(self, _numBank = 0, _widthPerBank = 0, _capacityPerBank = 0, _adrHashScheme = 'ideal', _reorderBufLen = 0):
+  def __init__(self, _numBank = 8, _widthPerBank = 1, _capacityPerBank = 64*1024, _adrHashScheme = 'ideal', _reorderBufLen = 0):
     # structure config
     self.numBank = _numBank           
     self.widthPerBank = _widthPerBank # BYTE
@@ -87,19 +87,23 @@ class SRAM():
 class DRAM():
   # DRAM performance is only by BW, i.e., perf = numData/BW
   # circuit PPA can be copied from DDR/HMB spec
-  def __init__(self, _numChannel = 0, _standard = 0, _capacityPerChannel = 0):
+  def __init__(self, _numChannel = 2, _standard = 0, _capacityPerChannel = 1e9):
     # structure config
+    # the simulation is based on Micron power calculator for DDR4
+    # the defualt # of channel is 2, with total capacity of 8Gb
+    # the system clock is 800MHz, read bandwidth is 800MT/s
     self.numChannel = _numChannel
     self.standard = _standard #['DDR3-xxxx', 'DDR4-xxxx', 'HBM2', etc]
     self.capacityPerChannel = _capacityPerChannel
     self.capacity = self.numChannel * self.capacityPerChannel #BYTE
     
     # circuit PPA initialization
-    self.width = 0 # BYTE
-    self.widthPerChannel = 0 # BYTE
-    self.BW = 0 # BTYE/s
-    self.energyPerBit = 0 # nj/bit
-    self.leakage = 0 # uw
+    self.width = 16 # BYTE
+    self.widthPerChannel = 8 # BYTE
+    self.BW = 19.2e9 # BTYE/s
+    self.energyPerBit = 18.125 # nj/bit
+    self.readpower = 116.5*1000 # nj/bit
+    self.leakage = 50.9*1000 # uw
 
     # statics 
     self.numAccess= 0
