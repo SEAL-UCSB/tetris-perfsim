@@ -102,7 +102,7 @@ class DRAM():
     self.widthPerChannel = 8 # BYTE
     self.BW = 19.2e9 # BTYE/s
     self.energyPerBit = 18.125 # nj/bit
-    self.readpower = 116.5*1000 # nj/bit
+    self.readpower = 116.5*1000 # uw
     self.leakage = 50.9*1000 # uw
 
     # statics 
@@ -141,12 +141,13 @@ class Tile(): # a.k.a. PE
   # the circuit PPA comes from CHISEL verilog and the NVSIM/CACTI
   def __init__(self, _nMAC = 0, _widthMAC = 0, _dataType = 'INT', _capacityUnifiedBuffer = 0, _capacityAccumulator = 0, _capacityWeightFIFO = 0):
     # structure config
-    # 16, 2, 'INT', 256*2, 32*32*2, 256*2
+    # the tpu paras: nMAC = 256*256, widthMAC = 8, unified buffer = 28MB, # accumulator = 256 
     self.nMAC = _nMAC # need to be 4^n  - n^2?
     self.widthMAC = _widthMAC # BYTE
     self.dataType = _dataType # ['FP', 'INT']
     self.capacityUnifiedBuffer = _capacityUnifiedBuffer # unified buffer according to TPU
     self.capacityAccumulator = _capacityAccumulator # the accumulator buffer in TPU
+    # we ignore the weight FIFO
     self.capacityWeightFIFO = _capacityWeightFIFO
     
     # circuit PPA initialization
@@ -166,8 +167,8 @@ class Tile(): # a.k.a. PE
     self.leakage = 0
     
     # statics
-    self.numMAC = 0
-    self.numBlock = 0
+    self.numMAC = nMAC
+    self.numBlock = 1   #???
     self.avgUtilization = 0
     self.totalEnergy = 0
     self.totalLatency = 0
@@ -198,6 +199,8 @@ class reorderDMA():
   # input index, output adr to the SRAM to read Fmap from SRAM to PE array
   # input index, output adr and send Fmap from PE to SRAM
   # circuit PPA results from verilog and DC, write HLS or CHISEL
+  
+  # DMA is 0 - jilan
   def __init__(self, _sizeBlock = 0, _numParallel = 0):  
     # structure config
     self.sizeBlock = _sizeBlock
@@ -234,6 +237,8 @@ class NoC():
   # the interconnection between PEs
   # use a fuzzy NOC to model that, similar with MAESTRO, performance only consider total NOC BW
   # circuit PPA does not considerred at this point
+  
+  # comments_jilan: we only model the bw, the communication within PE are modeled by accumulate buffer
   def __init__(self, _numTile = 0, _bandwidthPerTile = 0):
     # structure config
     self.numTile = _numTile
@@ -244,7 +249,7 @@ class NoC():
     # circuit PPA initialization
     self.areaPerTile = 0
     self.energyPerByte = 0
-    self.avgLantecy = 0 # Not used
+    self.avgLatecy = 0 # Not used
     
     # statics
     self.dataAmount = 0
@@ -270,13 +275,13 @@ class NoC():
         
 #@jilan   
 class TetrisArch():
-  def __init__(self, _type = 'block-sparse', _numTile = 0, _sparseBlockSize = 0, _sparseSource = 'synthatic'):
+  def __init__(self, _type = 'block-sparse', _numTile = 0, _sparseBlockSize = 0, _sparseSource = 'synthetic'):
     # purpose config
     self.type = _type # ['block-sparse', 'dense', 'element-sparse']
     # structure config
-    self.numTile = _numTile # should be n^2
-    self.sparseBlockSize = _sparseBlockSize # should be n^2
-    self.sparseSource = _sparseSource # 'synthatic' or 'pyTorch'
+    self.numTile = _numTile # should be n^2 - maybe not, jilan
+    self.sparseBlockSize = _sparseBlockSize # should be n^2 - maybe n
+    self.sparseSource = _sparseSource # 'synthetic' or 'pyTorch'
     
     
     # components creation
@@ -284,7 +289,7 @@ class TetrisArch():
     self.offMem = DRAM()
     self.fmapMem = SRAM()
     self.tile = Tile()
-    self.reorder = reorderDMA()
+    self.reorder = reorderDMA() # not used
     self.accBuf = SRAM()
     
     #statics
@@ -293,8 +298,8 @@ class TetrisArch():
     
     # asserts [TODO] @jilan
     assert(self.sparseBlockSize == self.singleTile.nMAC), 'sparse block size should be consisant with Tile size'
-    assert(self.numTile == self.reorder.numParallelBlocks)
-    assert(self.sparseBlockSize == self.reorder.sizeBlock)
+    # assert(self.numTile == self.reorder.numParallelBlocks)
+    # assert(self.sparseBlockSize == self.reorder.sizeBlock)
 
   def setup(self, _type = 'block-sparse', _numTile = 0, _sparseBlockSize = 0, _sparseSource = 'synthetic'):
     # purpose config
