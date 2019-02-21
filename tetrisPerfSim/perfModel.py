@@ -77,7 +77,14 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
 #@jilan  
 def PerfNOC(noc, dataAmount): # inputs: components.NoC(), [int] Byte; return (ns, nj)
   # [TODO] @jilan: calc reading NoC, update statics in noc
-  assert(True)
+  ener = noc.energyPerByte*dataAmount
+  latency = dataAmount/noc.bandwidthTotal
+  noc.dataAmount += dataAmount
+  noc.totalEnergy += noc.energyPerByte*dataAmount
+  # we assume that the data come from all the PEs
+  noc.totalLatency += dataAmount/noc.bandwidthTotal
+  
+  assert(noc.totalEnergy == noc.dataAmount*noc.energyPerByte), 'NOC energy should be consistent.'
 
 #@jilan  
 def PerfTILE(tile, blocksize, numtask): # inputs: components.Tile(), [int] nxn blocksize, [int] #block to calc; return (ns, nj)
@@ -86,18 +93,26 @@ def PerfTILE(tile, blocksize, numtask): # inputs: components.Tile(), [int] nxn b
   # calc thoughput for a singel blocksize, considering PE utilization
   # e.g., PE with 128x128 MAC with suffer with 1x1 block size
   
+  # in current version, we do not consider the utilization and block size
+  assert(blocksize == sqrt(nMAC)), 'in current version, we do not consider the utilization and block size'
+  
+  # to be dertermined by Tianqi's simulator
+  
   # calc all blocks
   assert(True)
 
 #@jilan  
 def PerfReorder(reorder, totalDataSize): # inputs: components.ReorderDMA(), [int] Byte, boolean; return (ns, nj)
   # [TODO] @jilan: calc reorder, update statics in reorder
-  assert(True)
+  assert(False), 'we are not using DMA for reordering now'
   
 def RoofLine(tetrisArch): # inputs: components.TetrisArch()
   # [TODO] @jilan: min{ total-PE, total-NOC, total-FmapMem, total-ReorderBuf, total-DRAM }, energy add them all
   # update the TetrisArch statics
   # NOTE: should be accumulative
+  self.totalEnergy = self.noc.totalEnergy + self.offMem.totalEnergy + self.fmapMem.totalEnergy + self.tile.totalEnergy+self.accBuf.totalEnergy
+  
+  
   assert(True)
 
 #@jilan
