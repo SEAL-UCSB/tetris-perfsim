@@ -110,8 +110,8 @@ def RoofLine(tetrisArch): # inputs: components.TetrisArch()
   # [TODO] @jilan: min{ total-PE, total-NOC, total-FmapMem, total-ReorderBuf, total-DRAM }, energy add them all
   # update the TetrisArch statics
   # NOTE: should be accumulative
-  self.totalEnergy = self.noc.totalEnergy + self.offMem.totalEnergy + self.fmapMem.totalEnergy + self.tile.totalEnergy+self.accBuf.totalEnergy
-  self.totalLatency = max(self.noc.totalLatency , self.offMem.totalLatency , self.fmapMem.totalLatency , self.tile.totalLatency , self.accBuf.totalLatency)
+  self.totalEnergy += self.noc.totalEnergy + self.offMem.totalEnergy + self.fmapMem.totalEnergy + self.tile.totalEnergy+self.accBuf.totalEnergy
+  self.totalLatency += max(self.noc.totalLatency , self.offMem.totalLatency , self.fmapMem.totalLatency , self.tile.totalLatency , self.accBuf.totalLatency)
   
   assert(True)
 
@@ -157,5 +157,10 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
         
     # roofline model, min{ total-PE, total-NOC, total-FmapMem, total-ReorderBuf, total-DRAM }
     RoofLine(tetrisArch)
+    tetrisArch.tile.reset()
+    tetrisArch.accBuf.reset()
+    tetrisArch.offMem.reset()
+    tetrisArch.fmapMem.reset()
+    tetrisArch.noc.reset()
       
   assert(True)
