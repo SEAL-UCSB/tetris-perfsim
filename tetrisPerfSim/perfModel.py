@@ -111,7 +111,7 @@ def RoofLine(tetrisArch): # inputs: components.TetrisArch()
   # update the TetrisArch statics
   # NOTE: should be accumulative
   self.totalEnergy = self.noc.totalEnergy + self.offMem.totalEnergy + self.fmapMem.totalEnergy + self.tile.totalEnergy+self.accBuf.totalEnergy
-  
+  self.totalLatency = max(self.noc.totalLatency , self.offMem.totalLatency , self.fmapMem.totalLatency , self.tile.totalLatency , self.accBuf.totalLatency)
   
   assert(True)
 
