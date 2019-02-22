@@ -157,10 +157,10 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
         
     # roofline model, min{ total-PE, total-NOC, total-FmapMem, total-ReorderBuf, total-DRAM }
     RoofLine(tetrisArch)
-    tetrisArch.tile.reset()
-    tetrisArch.accBuf.reset()
-    tetrisArch.offMem.reset()
-    tetrisArch.fmapMem.reset()
-    tetrisArch.noc.reset()
+    tetrisArch.tile.resetStatus()
+    tetrisArch.accBuf.resetStatus()
+    tetrisArch.offMem.resetStatus()
+    tetrisArch.fmapMem.resetStatus()
+    tetrisArch.noc.resetStatus()
       
   assert(True)
