@@ -25,8 +25,8 @@ def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), [int] Byte; retur
   # We assume the weight is formated with block and index offline 
   
   # calc latency and energy
-  latency = dataAmount / memory.accessBW
-  energy = dataAmount / memory.width * memory.accessEnergy
+  latency = dataAmount / memory.BW
+  energy = dataAmount * 8 * memory.energyPerBit + latency * memory.leakage * 1000
   
   # update the stat in the component.DRAM()
   memory.totalLatency += latency
@@ -70,9 +70,23 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     memory.numAccess += dataAmount/memory.width
     memory.totalEnergy = memory.accessEnergy*memory.numAccess
     memory.totalReadEnergy += memory.accessEnergy*memory.numAccess
+    
   else:
-    assert(True)
-  assert(True)
+    # calc latency and energy
+    numWrite = dataAmount / memory.width
+    latency = numWrite * memory.writeLatency
+    energy = numWrite * memory.writeEnergy
+    
+    # update the stat in the component.SRAM()
+    memory.numWrite += numWrite
+    memory.totalWreteLatency += latency
+    memory.totalWriteEnergy += energy
+    memory.totalLatency += latency
+    memory.numAccess += dataAmount/memory.width
+    memory.totalEnergy = memory.accessEnergy*memory.numAccess
+    memory.totalWriteEnergy += memory.accessEnergy*memory.numAccess
+    
+#  assert(True)
 
 #@jilan  
 def PerfNOC(noc, dataAmount): # inputs: components.NoC(), [int] Byte; return (ns, nj)
