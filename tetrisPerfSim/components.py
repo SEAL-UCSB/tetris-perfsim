@@ -32,13 +32,13 @@ class SRAM():
     self.reorderBufLen = _reorderBufLen # 0 length means in-order read
         
     # circuit PPA initialization 
-    self.area = 483662*_numBank # um2; is calculated by combanition of banks
+    self.area = 0*_numBank # um2; is calculated by combanition of banks
     # CACTI does not give write energy/time but access energy/time
-    self.readLatency = 0.2962*_numBank # ns
-    self.writeLatency = 0.2962*_numBank
-    self.readEnergy = 0.01967*_numBank
-    self.writeEnergy = 0.01967*_numBank
-    self.leakage = 14.6739*_numBank #uw
+    self.readLatency = 0*_numBank # ns
+    self.writeLatency = 0*_numBank
+    self.readEnergy = 0*_numBank
+    self.writeEnergy = 0*_numBank
+    self.leakage = 0*_numBank #uw
     
     # statics initialization
     self.numRead = 0
@@ -67,7 +67,18 @@ class SRAM():
   def calcPPA(self):
     # [TODO] @jilan
     # circuit PPA according to the configuration and CACTI etc
-    assert(True)
+    if _numBank == 8 and _widthPerBank == 1 and _capacityPerBank == 64*1024:
+      self.area = 483662*_numBank # um2; is calculated by combanition of banks
+      # CACTI does not give write energy/time but access energy/time
+      self.readLatency = 0.2962*_numBank # ns
+      self.writeLatency = 0.2962*_numBank
+      self.readEnergy = 0.01967*_numBank
+      self.writeEnergy = 0.01967*_numBank
+      self.leakage = 14.6739*_numBank #uw
+    elif _numBank == 8 and _widthPerBank == 2 and _capacityPerBank == 64*1024:
+      assert(False), 'not provided yet'
+    else:
+      assert(False), 'Unexpected SRAM configurations.'
   
   def resetStatus(self):
     self.numRead = 0
@@ -123,7 +134,17 @@ class DRAM():
   def calcPPA(self):
     # [TODO] @jilan 
     # circuit PPA according to the standard and DRAM spec etc
-    assert(True)
+    if _numChannel == 2 and _standard == 'DDR4-2666' and  _capacityPerChannel = 1e9:
+      self.width = 16 # BYTE
+      self.widthPerChannel = 8 # BYTE
+      self.BW = 19.2e9 # BTYE/s
+      self.energyPerBit = 18.125 # nj/bit
+      self.readpower = 116.5*1000 # uw
+      self.leakage = 50.9*1000 # uw
+    elif:
+      assert(False), 'not set yet'
+    else:
+      assert(False), 'Unexpected DRAM configuration.'
     
   def resetStatus(self):
     self.numAccess= 0
@@ -321,6 +342,8 @@ class TetrisArch():
   def printResult(self, level): # input: int
     # [TODO] @jilan
     print "=========="
+    print("The total energy consumption is ", self.totalEnergy, "nj")
+    print("The system throughput is ", 1/self.totalLatency, "images / s")
     
     
     
