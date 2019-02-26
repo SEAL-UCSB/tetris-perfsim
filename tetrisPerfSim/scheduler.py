@@ -70,17 +70,18 @@ def Partition(tetrisArch, layer): #input: components.TetrisArch(), traceGen.Laye
       finishedBlocks.append(layer.data[j].name)
 
       # weight information
-      partition[i].weight['dataAdr'].append(W_adr[j])
       partition[i].weight['byte'] += W_adr.size * dataWidth
 
       # input FM from mem
       if layer.data[j].coordRow not in iterBlockRow:
         iterBlockRow.append(layer.data[j].coordRow)
         partition[i].fmapFromFmapMem['dataAdr'].append(FMI_adr[j])
+        #partition[i].fmapFromFmapMem['dataAdr'] += FMI_adr[j].tolist()
         partition[i].fmapFromFmapMem['byte'] += FMI_adr[j].size * dataWidth
       # input FM from NOC
       else:
         partition[i].dupFmapInNoC['dataAdr'].append(FMI_adr[j])
+        #partition[i].dupFmapInNoC['dataAdr'] += FMI_adr[j].tolist()
         partition[i].dupFmapInNoC['byte'] += FMI_adr[j].size * dataWidth
 
       # output FM in each iteration
@@ -90,12 +91,14 @@ def Partition(tetrisArch, layer): #input: components.TetrisArch(), traceGen.Laye
       # partial addition between PE through NOC
       else:
         partition[i].accFmapInNoc['dataAdr'].append(FMO_adr[j])
+        #partition[i].accFmapInNoc['dataAdr'] += FMO_adr[j].tolist()
         partition[i].accFmapInNoc['byte'] += FMO_adr[j].size * dataWidth
 
     for j in range(len(iterBlockCol)):
       # output FM from accumulator
       if BlockCol[iterBlockCol[j]] == 1:
         partition[i].fmapFromAccBuf['dataAdr'].append(iterFMO[j])
+        #partition[i].fmapFromAccBuf['dataAdr'] += iterFMO[j].tolist()
         partition[i].fmapFromAccBuf['byte'] += iterFMO[j].size * dataWidth
       else:
         BlockCol[iterBlockCol[j]] = 1
@@ -109,10 +112,12 @@ def Partition(tetrisArch, layer): #input: components.TetrisArch(), traceGen.Laye
       # output FM to Mem
       if finished:
         partition[i].fmapToFmapMem['dataAdr'].append(iterFMO[j])
+        #partition[i].fmapToFmapMem['dataAdr'] += iterFMO[j].tolist()
         partition[i].fmapToFmapMem['byte'] += iterFMO[j].size * dataWidth
       # output FM to AccBuffer
       else:
         partition[i].fmapToAccBuf['dataAdr'].append(iterFMO[j])
+        #partition[i].fmapToAccBuf['dataAdr'] += iterFMO[j].tolist()
         partition[i].fmapToAccBuf['byte'] += iterFMO[j].size * dataWidth
 
 
