@@ -115,10 +115,15 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
   # [TODO]: @liu
   model_info = {}
   if select == 'vgg16':
-    with open('configs/vgg.json', 'r') as f:
+    with open('configs/vgg16.json', 'r') as f:
       model_info = json.load(f)['vgg16']
     app.name = select
     app.numLayer = 16
+  elif select == 'vgg8':
+    with open('configs/vgg8.json', 'r') as f:
+      model_info = json.load(f)['vgg8']
+    app.name = select
+    app.numLayer = 8
   elif select == 'resnet152':
     assert(False)
   else:
@@ -137,15 +142,15 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
     }
 
     # type
-    if i < 13 and select == 'vgg16':
+    if (i < 13 and select == 'vgg16') or (i < 6 and select == 'vgg8'):
       app.layers[i].type = 'conv'
-    elif i >= 13 and select == 'vgg16':
+    elif (i >= 13 and select == 'vgg16') or (i >= 6 and select == 'vgg8'):
       app.layers[i].type = 'fc'
     else:
       assert(False)
 
     # sparseRatio
-    app.layers[i].sparseRatio = model_info['pruning_rates'][i]
+    app.layers[i].sparseRatio = 1 - model_info['pruning_rates'][i]
 
     # dataSource
     app.layers[i].dataSource = hardware.sparseSource #'synthatic'
@@ -154,10 +159,12 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
     app.layers[i].dataWidth = 4
 
     # name
-    if i < 13 and select == 'vgg16':
+    if (i < 13 and select == 'vgg16') or (i < 6 and select == 'vgg8'):
       app.layers[i].name = 'conv' + str(i + 1)
     elif i >= 13 and select == 'vgg16':
       app.layers[i].name = 'fc' + str(i - 12)
+    elif i >= 6 and select == 'vgg8':
+      app.layers[i].name = 'fc' + str(i - 5)
     else:
       assert(False)
       
@@ -166,5 +173,6 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
     app.layers[i].blockSizeW = model_info['block_sizes'][i][1]
 
     traceGen.SparseDataGen(app.layers[i])
+
 
   return app 
