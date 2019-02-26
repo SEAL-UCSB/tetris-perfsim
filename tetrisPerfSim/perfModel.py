@@ -18,6 +18,7 @@ Write the SRAM with the index
 
 #@liu: maintain this module
 from tetrisPerfSim import scheduler, reorderEngine
+import numpy as np
 
 #@jilan
 def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), [int] Byte; return (ns, nj)
@@ -39,16 +40,73 @@ def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), [int] Byte; retur
 #@ling
 def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), list[int] address list, [boolean]; return (ns, nj)
   # [TODO] @jilan: calc reading SRAM, update statics in memory
+
+  numBank = memory.numBank
+  dataAmount = 0
+  for e in address:
+    dataAmount += e.size
+  numAccess = dataAmount / numBank
+  totalConflict = 0
+
   if(memory.adrHashScheme == 'ideal'):
     # assume maximal bank parallelism zero bank conflict, i.e., no reordering overhead
     # should be the same as PerfBUF (or simply call PerfBUF)
+
+    if isREAD:
+      latency = memory.readLatency * numAccess
+      energy = memory.readEnergyPerBank * dataAmount + memory.leakage * latency
+    else:
+      latency = memory.writeLatency * numAccess
+      energy = memory.writeEnergyPerBank * dataAmount + memory.leakage * latency
     assert(True)
+
   elif(memory.adrHashScheme == 'modN'): # NOTE THAT SRAM model need to consider multi-bank parallelsim and conflict stuff
     # NOTE THAT we could have a OOO-read/write queue here
     # check memory.reorderBufLen
+
+    numConflictAccess = 0
+
+    #reshape the address as a vector
+    adrOrder = np.reshape(np.asarray(address).T, -1)
+    for i in range(numAccess):
+      bankList = []
+      numConflict = []
+      beginIdx = i * numBank
+      for j in range(beginIdx, beginIdx + numBank):
+        if adrOrder[j] not in bankList:
+          bankList.append(adrOrder[j])
+          numConflict.append(1)
+        else:
+          numConflict[bankList.index(adrOrder[j])] += 1
+      numConflictAccess += max(numConflict)
+      totalConflict += (sum(numConflict) - len(numConflict))
+
+    if isREAD:
+      latency = memory.readLatency * numConflictAccess
+      energy = memory.readEnergyPerBank * dataAmount + memory.leakage * latency
+    else:
+      latency = memory.writeLatency * numConflictAccess
+      energy = memory.writeEnergyPerBank * dataAmount + memory.leakage * latency
     assert(True)
+
   else:
     assert(False)
+
+
+  if isREAD:
+    memory.numRead += dataAmount
+    memory.totalReadEnergy += energy
+    memory.totalReadLatency += latency
+  else:
+    memory.numWrite += dataAmount
+    memory.totalWriteEnergy += energy
+    memory.totalWriteLatency += latency
+
+
+  memory.numBankConflict += totalConflict
+  memory.totalEnergy += energy
+  memory.totalLatency += latency
+
   assert(True)
 
 #@jilan  
