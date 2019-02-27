@@ -119,12 +119,12 @@ class SRAM():
     elif self.numBank == 16 and self.widthPerBank == 1 and self.capacityPerBank == 1024*1024:
       self.area = 2.6427*3.1487*10^6 # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
-      self.readLatency = 1.0179*_numBank # ns
-      self.writeLatency = 1.0179_numBank
+      self.readLatency = 1.0179 # ns
+      self.writeLatency = 1.0179
       self.readEnergyPerBank = 0.09743 # uw
-      self.readEnergy = 0.09743*_numBank
-      self.writeEnergy = 0.09743*_numBank
-      self.leakage = 134.178e3*_numBank #uw
+      self.readEnergy = 0.09743*self.numBank
+      self.writeEnergy = 0.09743*self.numBank
+      self.leakage = 134.178e3*self.numBank #uw
     else:
       assert(False), 'Unexpected SRAM configurations.'
   
