@@ -166,17 +166,22 @@ def PerfTILE(tile, blocksize, numtask): # inputs: components.Tile(), [int] nxn b
   # e.g., PE with 128x128 MAC with suffer with 1x1 block size
   
   # in current version, we do not consider the utilization and block size
-  assert(blocksize == sqrt(nMAC)), 'in current version, we do not consider the utilization and block size'
-  
-  # to be dertermined by Tianqi's simulator
+  assert(blocksize == nMAC), 'in current version, we do not consider the utilization and block size'
+  if Ture:
+    tile.numBlock += numtask   #???
+    tile.avgUtilization = 1
+    latency = numtask*sqrt(blocksize)*tile.latencyPerMAC
+    tile.totalEnergy += (tile.power+tile.leakage)*latency
+    self.totalLatency += latency
+  # dertermined by Tianqi's simulator
   
   # calc all blocks
-  assert(True)
+  # assert(True)
 
 #@jilan  
-def PerfReorder(reorder, totalDataSize): # inputs: components.ReorderDMA(), [int] Byte, boolean; return (ns, nj)
+# def PerfReorder(reorder, totalDataSize): # inputs: components.ReorderDMA(), [int] Byte, boolean; return (ns, nj)
   # [TODO] @jilan: calc reorder, update statics in reorder
-  assert(False), 'we are not using DMA for reordering now'
+  # assert(False), 'we are not using DMA for reordering now'
   
 def RoofLine(tetrisArch): # inputs: components.TetrisArch()
   # [TODO] @jilan: min{ total-PE, total-NOC, total-FmapMem, total-ReorderBuf, total-DRAM }, energy add them all
@@ -219,7 +224,7 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
     
     # update the reorder engine
     totalDataSize = partialLayer.fmapFromFmapMem['byte'] + partialLayer.fmapToFmapMem['byte']
-    PerfReorder(tetrisArch.reorder, totalDataSize)
+    #PerfReorder(tetrisArch.reorder, totalDataSize)
 
     # calc NOC, update statics in tetrisArch
     totalDataSize = partialLayer.dupFmapInNoC['byte'] + partialLayer.fmapFromFmapMem['byte'] + \
