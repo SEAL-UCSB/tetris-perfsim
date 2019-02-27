@@ -26,7 +26,7 @@ class PartialLayer():
     self.dupFmapInNoC = {'byte':0, 'dataAdr':[]} # 'byte': data size; 'data': not used, list of traceGen.DataBlock()
 
     # calculate addition between two PE through NOC
-    self.accFmapInNoc = {'bypte':0, 'dataAdr':[]}
+    self.accFmapInNoc = {'byte':0, 'dataAdr':[]}
     
     # accumuate data from last partial layer, read the after-shuffled block data from ReorderBuf, not FmapMEM
     self.fmapFromAccBuf = {'byte':0, 'dataAdr':[]} # 'byte': data size; 'data': not used, list of traceGen.DataBlock()
