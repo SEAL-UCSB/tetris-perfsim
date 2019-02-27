@@ -465,14 +465,15 @@ class TetrisArch():
    
   def printConfig(self):
     # [TODO] @jilan
-    print "\n"
-    print "==========Tetris Configurations=========="
+    print " "
+    print "====================Tetris Configurations===================="
     print "# PEs: ", self.numTile
     print "Unified Buffer (SRAM): ", self.fmapMem.capacity, "Bytes,"
     print "Accumulate Buffer (SRAM): ", self.accBuf.capacity, "Bytes,"
     print "Off-chip Memory (DRAM):", self.offMem.capacity/1e9, "GB",self.offMem.standard, "with ", self.offMem.numChannel, "channel(s)"
     print "The bandwidth of NoC: ", self.noc.bandwidthTotal, "Bytes"
-    print "\n\n"
+    print "============================================================="
+    print " "
   
   def printResult(self, level): # input: int
     # [TODO] @jilan
