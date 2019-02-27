@@ -168,9 +168,9 @@ def PerfTILE(tile, blocksize, numtask): # inputs: components.Tile(), [int] nxn b
   # in current version, we do not consider the utilization and block size
   assert(blocksize == nMAC), 'in current version, we do not consider the utilization and block size'
   if Ture:
-    tile.numBlock += numtask   #???
+    tile.numBlock += 1
     tile.avgUtilization = 1
-    latency = numtask*sqrt(blocksize)*tile.latencyPerMAC
+    latency = numtask/sqrt(blocksize)*tile.latencyPerMAC
     tile.totalEnergy += (tile.power+tile.leakage)*latency
     self.totalLatency += latency
   # dertermined by Tianqi's simulator
@@ -187,7 +187,7 @@ def RoofLine(tetrisArch): # inputs: components.TetrisArch()
   # [TODO] @jilan: min{ total-PE, total-NOC, total-FmapMem, total-ReorderBuf, total-DRAM }, energy add them all
   # update the TetrisArch statics
   # NOTE: should be accumulative
-  self.totalEnergy += self.noc.totalEnergy + self.offMem.totalEnergy + self.fmapMem.totalEnergy + self.tile.totalEnergy+self.accBuf.totalEnergy
+  self.totalEnergy += self.noc.totalEnergy + self.offMem.totalEnergy + self.fmapMem.totalEnergy + self.tile.totalEnergy*self.numTile+self.accBuf.totalEnergy
   self.totalLatency += max(self.noc.totalLatency , self.offMem.totalLatency , self.fmapMem.totalLatency , self.tile.totalLatency , self.accBuf.totalLatency)
   
   assert(True)
@@ -211,7 +211,7 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
     PerfBUF(tetrisArch.accBuf, totalDataSize, True)
       
     # calc reading Fmap from PE (Fmap reused by two tiles), update statics in tetrisArch
-    numtask = partialLayer.weight/tetrisArch.tile.nMAC # [TODO] @jilan: figure out num of blocks to compute from partialLayer
+    numtask = (partialLayer.accFmapInNoc['byte'] + partialLayer.fmapToFmapMem['byte'] + partialLayer.fampToAccBuf['byte'])/tetrisArch.numTile # [TODO] @jilan: figure out num of blocks to compute from partialLayer
     PerfTILE(tetrisArch.tile, layer.blockSizeH * layer.blockSizeW, numtask) 
     
     # calc writing Fmap to FmapMem, update statics in tetrisArch
