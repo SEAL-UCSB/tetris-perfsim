@@ -211,7 +211,7 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
     PerfBUF(tetrisArch.accBuf, totalDataSize, True)
       
     # calc reading Fmap from PE (Fmap reused by two tiles), update statics in tetrisArch
-    numtask = 0 # [TODO] @jilan: figure out num of blocks to compute from partialLayer
+    numtask = partialLayer.weight/tetrisArch.tile.nMAC # [TODO] @jilan: figure out num of blocks to compute from partialLayer
     PerfTILE(tetrisArch.tile, layer.blockSizeH * layer.blockSizeW, numtask) 
     
     # calc writing Fmap to FmapMem, update statics in tetrisArch
