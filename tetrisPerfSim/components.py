@@ -108,7 +108,7 @@ class SRAM():
     elif self.numBank == 16 and self.widthPerBank == 1 and self.capacityPerBank == 512*1024:
       self.area = 2.640336 * 1.712695*10^6*self.numBank # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
-      self.readLatency = 0.7623* # ns
+      self.readLatency = 0.7623 # ns
       self.writeLatency = 0.7623
       self.readEnergyPerBank = 0.05771 # uw
       self.readEnergy = 0.05771*self.numBank
