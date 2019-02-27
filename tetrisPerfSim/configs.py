@@ -41,7 +41,7 @@ def DesignSpaceExploration(select): # input: int/string; output: components.Tetr
     tetris.resetStatus()
   elif select == 'dense':
     tetris.setup('block-sparse', 64, 64, 'synthetic')
-    tetris.noc.setup(64, 2)   # 2 byte/cycle
+    tetris.noc.setup(64, 2e9)   # 2 byte/cycle
     tetris.offMem.setup(2,'DDR4-2666', 4e9)   # @Shuangchen Do we model DRAM?
     tetris.fmapMem.setup(16, 1, 512*1024)
     tetris.tile.setup(16, 8, 'INT', 256*2, 32*32*2, 256*2)   # BYTE

@@ -380,7 +380,8 @@ class NoC():
   # use a fuzzy NOC to model that, similar with MAESTRO, performance only consider total NOC BW
   # circuit PPA does not considerred at this point
   
-  # comments_jilan: we only model the bw, the communication within PE are modeled by accumulate buffer
+  # comments_by_jilan: we only model the bw, the communication within PE are modeled by accumulate buffer
+  # bandwidth: GB/s
   def __init__(self, _numTile = 0, _bandwidthPerTile = 0):
     # structure config
     self.numTile = _numTile
