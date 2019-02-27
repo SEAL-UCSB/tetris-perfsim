@@ -48,7 +48,7 @@ class App():
 
 # @ling    
 def SparseDataGen(layer):
-  if(layer.dataSource == 'synthatic'):
+  if(layer.dataSource == 'synthetic'):
     # numBlock
     layer.numBlockH = layer.value['Cin'] / layer.blockSizeH
     layer.numBlockW = layer.value['Cout'] / layer.blockSizeW
@@ -99,5 +99,6 @@ def SparseDataGen(layer):
     # [TODO] @ling 
     assert(True)
   else:
-    assert(False)
+    print 'Unable to recognize the data source with', layer.dataSource
+    assert(False),'Unable to recognize the data source'
   

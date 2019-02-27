@@ -14,7 +14,7 @@ def main():
   for selectHW in hardwarePool:
     hardware = configs.DesignSpaceExploration(selectHW)
     hardware.printConfig()
-    hardware.reset()
+    hardware.resetStatus()
     for selectAPP in appPool:
       app = configs.Benchmarking(selectAPP, hardware)
       for layer in app.layers:

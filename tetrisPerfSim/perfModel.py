@@ -118,7 +118,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     # calc latency and energy
     numRead = dataAmount / memory.width
     latency = numRead * memory.readLatency
-    energy = numRead * memory.readEnergy
+    energy = numRead * memory.readEnergy + latency * memory.leakage
     
     # update the stat in the component.SRAM()
     memory.numRead += numRead
@@ -133,7 +133,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     # calc latency and energy
     numWrite = dataAmount / memory.width
     latency = numWrite * memory.writeLatency
-    energy = numWrite * memory.writeEnergy
+    energy = numWrite * memory.writeEnergy + latency * memory.leakage
     
     # update the stat in the component.SRAM()
     memory.numWrite += numWrite

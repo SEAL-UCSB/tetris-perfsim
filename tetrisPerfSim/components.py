@@ -78,7 +78,7 @@ class SRAM():
       self.writeEnergy = 0.01967*self.numBank
       self.leakage = 14.6739e3*self.numBank #uw
     elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 128*1024:
-      self.area = 1.006998 * 0.861028*10^6*self.numBank # um2; is calculated by combanition of banks
+      self.area = 1.006998 * 0.861028e6*self.numBank # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
       self.readLatency = 0.4675 # ns
       self.writeLatency = 0.4675
@@ -87,7 +87,7 @@ class SRAM():
       self.writeEnergy = 0.02716*self.numBank
       self.leakage = 30.4356e3*self.numBank #uw
     elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 256*1024:
-      self.area = 1.006998 * 1.579929*10^6*self.numBank # um2; is calculated by combanition of banks
+      self.area = 1.006998 * 1.579929e6*self.numBank # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
       self.readLatency = 0.582776 # ns
       self.writeLatency = 0.582776
@@ -96,7 +96,7 @@ class SRAM():
       self.writeEnergy = 0.0351926*self.numBank
       self.leakage = 67.09e3*self.numBank #uw
     elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 512*1024:
-      self.area = 1.994496 * 1.774642*10^6*self.numBank # um2; is calculated by combanition of banks
+      self.area = 1.994496 * 1.774642e6*self.numBank # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
       self.readLatency = 0.7607 # ns
       self.writeLatency = 0.7607
@@ -106,7 +106,7 @@ class SRAM():
       self.leakage = 138.4e3*self.numBank #uw
       
     elif self.numBank == 16 and self.widthPerBank == 1 and self.capacityPerBank == 512*1024:
-      self.area = 2.640336 * 1.712695*10^6*self.numBank # um2; is calculated by combanition of banks
+      self.area = 2.640336 * 1.712695e6*self.numBank # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
       self.readLatency = 0.7623 # ns
       self.writeLatency = 0.7623
@@ -117,7 +117,7 @@ class SRAM():
       self.leakage = 60.87e3*self.numBank #uw
       
     elif self.numBank == 16 and self.widthPerBank == 1 and self.capacityPerBank == 1024*1024:
-      self.area = 2.6427*3.1487*10^6 # um2; is calculated by combanition of banks
+      self.area = 2.6427*3.1487e6 # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
       self.readLatency = 1.0179 # ns
       self.writeLatency = 1.0179
@@ -146,7 +146,7 @@ class SRAM():
 class DRAM():
   # DRAM performance is only by BW, i.e., perf = numData/BW
   # circuit PPA can be copied from DDR/HMB spec
-  def __init__(self, _numChannel = 2, _standard = 0, _capacityPerChannel = 1e9):
+  def __init__(self, _numChannel = 2, _standard = 0, _capacityPerChannel = 0):
     # structure config
     # the simulation is based on Micron power calculator for DDR4
     # the defualt # of channel is 2, with total capacity of 8Gb
@@ -182,14 +182,14 @@ class DRAM():
   def calcPPA(self):
     # [TODO] @jilan 
     # circuit PPA according to the standard and DRAM spec etc
-    if self.numChannel == 2 and self.standard == 'DDR4-2666' and  self.capacityPerChannel = 1e9:
+    if self.numChannel == 2 and self.standard == 'DDR4-2666' and  self.capacityPerChannel == 4e9:
       self.width = 16 # BYTE
       self.widthPerChannel = 8 # BYTE
       self.BW = 19.2e9 # BTYE/s
       self.energyPerBit = 18.125*0.001 # nj/bit
       self.readpower = 116.5*1000 # uw
       self.leakage = 50.9*1000 # uw
-    elif:
+    elif self.numChannel == 2 and self.standard == 'DDR4-2666' and  self.capacityPerChannel == 8e9:
       assert(False), 'not set yet'
     else:
       assert(False), 'Unexpected DRAM configuration.'
@@ -252,9 +252,9 @@ class Tile(): # a.k.a. PE
     self.capacityWeightFIFO = _capacityWeightFIFO
     
   def calcPPA(self):
-    if self.nMAC == 4^2, self.widthMAC == 8, _dataType = 'INT':
+    if self.nMAC == 16 and self.widthMAC == 8 and self.dataType == 'INT':
       # [TODO] @jilan
-      self.area = 0.01244113 * 10^6 # um^2
+      self.area = 0.01244113e6 # um^2
       self.areaMAC = 10823.2932578604
       # self.areaUB = 0
       self.areaACC = 994.958642567901
@@ -270,9 +270,9 @@ class Tile(): # a.k.a. PE
       self.energyPerBitACC = 0
       self.leakage = 0.0039094233 
     
-    elif self.nMAC == 8^2, self.widthMAC == 8, _dataType = 'INT':
+    elif self.nMAC == 64 and self.widthMAC == 8 and self.dataType == 'INT':
       # [TODO] @jilan
-      self.area = 0.0481898566732414 * 10^6 # um^2
+      self.area = 0.0481898566732414e6 # um^2
       self.areaMAC = 43293.1730314416
       # self.areaUB = 0
       self.areaACC = 1989.92
@@ -288,7 +288,7 @@ class Tile(): # a.k.a. PE
       self.energyPerBitACC = 0
       self.leakage = 0.0155812244  
       
-    elif self.nMAC == 16^2, self.widthMAC == 8, _dataType = 'INT':
+    elif self.nMAC == 256 and self.widthMAC == 8 and dataType == 'INT':
       # [TODO] @jilan
       self.area = 0.189610096796027 * 10^6 # um^2
       self.areaMAC = 173172.692125766
@@ -306,9 +306,9 @@ class Tile(): # a.k.a. PE
       self.energyPerBitACC = 0
       self.leakage = 0.0625239600
       
-    elif self.nMAC == 32^2, self.widthMAC == 8, _dataType = 'INT':
+    elif self.nMAC == 1024 and self.widthMAC == 8 and self.dataType == 'INT':
       # [TODO] @jilan
-      self.area = 0.752141727390228 * 10^6 # um^2
+      self.area = 0.752141727390228e6 # um^2
       self.areaMAC = 692690.768503066
       # self.areaUB = 0
       self.areaACC = 7959.66914054321
@@ -324,6 +324,7 @@ class Tile(): # a.k.a. PE
       self.energyPerBitACC = 0
       self.leakage = 0.2502539651 
     else:
+      print('For PE, # MAC:', self.nMAC, 'width of a MAC:', self.widthMAC,'data type:', self.dataType)
       assert(False), 'No acceptable paras for PE.'
     # circuit PPA according to the configuration and DC etc
     # assert(True)
@@ -380,7 +381,7 @@ class NoC():
   # circuit PPA does not considerred at this point
   
   # comments_jilan: we only model the bw, the communication within PE are modeled by accumulate buffer
-  def __init__(self, _numTile = 0, _bandwidthPerTile = 2):
+  def __init__(self, _numTile = 0, _bandwidthPerTile = 0):
     # structure config
     self.numTile = _numTile
     self.bandwidthPerTile = _bandwidthPerTile
@@ -407,7 +408,9 @@ class NoC():
   def calcPPA(self):
     # [TODO] @jilan     
     # circuit PPA according to the configuration and DC etc
-    assert(True)
+    if True:
+      self.energyPerByte = 0.002097 #pj
+    # assert(True)
     
   def resetStatus(self):
     self.dataAmount = 0
@@ -438,7 +441,7 @@ class TetrisArch():
     self.totalEnergy = 0
     
     # asserts [TODO] @jilan
-    assert(self.sparseBlockSize == self.singleTile.nMAC), 'sparse block size should be consisant with Tile size'
+    assert(self.sparseBlockSize == self.tile.nMAC), 'sparse block size should be consisant with Tile size'
     # assert(self.numTile == self.reorder.numParallelBlocks)
     # assert(self.sparseBlockSize == self.reorder.sizeBlock)
 
@@ -451,19 +454,29 @@ class TetrisArch():
     self.sparseSource = _sparseSource # 'synthatic' or 'pyTorch'
       
   def resetStatus(self):
-    self.totalLatency = 0
-    self.totalEnergy = 0
+    # self.totalLatency = 0
+    # self.totalEnergy = 0
+    self.tile.resetStatus()
+    self.accBuf.resetStatus()
+    self.offMem.resetStatus()
+    self.fmapMem.resetStatus()
+    self.noc.resetStatus()
     # [TODO] @jilan reset statics for every components
    
   def printConfig(self):
     # [TODO] @jilan
-    print "========"
+    print "==========Tetris Configurations=========="
+    print "# PEs: ", self.numTile
+    print "Unified Buffer (SRAM): ", self.fmapMem.capacity, "Bytes,"
+    print "Accumulate Buffer (SRAM): ", self.accBuf.capacity, "Bytes,"
+    print "Off-chip Memory (DRAM):", self.offMem.capacity/1e9, "GB",self.offMem.standard, "with ", self.offMem.numChannel, "channel(s)"
+    print "The bandwidth of NoC: ", self.noc.bandwidthTotal, "Bytes"
   
   def printResult(self, level): # input: int
     # [TODO] @jilan
-    print "=========="
-    print("The total energy consumption is ", self.totalEnergy, "nj")
-    print("The system throughput is ", 1/self.totalLatency, "images / s")
+    print "==========the total energy and throughtput=========="
+    print "The total energy consumption is ", self.totalEnergy, "nj"
+    print "The system throughput is ", 1/self.totalLatency, "images / s"
     
     
     
