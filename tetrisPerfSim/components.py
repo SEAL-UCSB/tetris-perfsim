@@ -31,7 +31,8 @@ class SRAM():
     self.adrHashScheme = _adrHashScheme # e.g., ['modN','ideal']
     self.reorderBufLen = _reorderBufLen # 0 length means in-order read
         
-    # circuit PPA initialization 
+    # circuit PPA initialization
+    self.readEnergyPerBank = 0
     self.area = 0*_numBank # um2; is calculated by combanition of banks
     # CACTI does not give write energy/time but access energy/time
     self.readLatency = 0*_numBank # ns
@@ -67,15 +68,16 @@ class SRAM():
   def calcPPA(self):
     # [TODO] @jilan
     # circuit PPA according to the configuration and CACTI etc
-    if _numBank == 8 and _widthPerBank == 1 and _capacityPerBank == 64*1024:
+    if self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 64*1024:
       self.area = 483662*_numBank # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
       self.readLatency = 0.2962*_numBank # ns
       self.writeLatency = 0.2962*_numBank
+      self.readEnergyPerBank = 0.01967 # uw
       self.readEnergy = 0.01967*_numBank
       self.writeEnergy = 0.01967*_numBank
       self.leakage = 14.6739*_numBank #uw
-    elif _numBank == 8 and _widthPerBank == 2 and _capacityPerBank == 64*1024:
+    elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 64*1024:
       assert(False), 'not provided yet'
     else:
       assert(False), 'Unexpected SRAM configurations.'
@@ -112,7 +114,7 @@ class DRAM():
     self.width = 16 # BYTE
     self.widthPerChannel = 8 # BYTE
     self.BW = 19.2e9 # BTYE/s
-    self.energyPerBit = 18.125 # nj/bit
+    self.energyPerBit = 18.125*0.001 # nj/bit
     self.readpower = 116.5*1000 # uw
     self.leakage = 50.9*1000 # uw
 
@@ -134,11 +136,11 @@ class DRAM():
   def calcPPA(self):
     # [TODO] @jilan 
     # circuit PPA according to the standard and DRAM spec etc
-    if _numChannel == 2 and _standard == 'DDR4-2666' and  _capacityPerChannel = 1e9:
+    if self.numChannel == 2 and self.standard == 'DDR4-2666' and  self.capacityPerChannel = 1e9:
       self.width = 16 # BYTE
       self.widthPerChannel = 8 # BYTE
       self.BW = 19.2e9 # BTYE/s
-      self.energyPerBit = 18.125 # nj/bit
+      self.energyPerBit = 18.125*0.001 # nj/bit
       self.readpower = 116.5*1000 # uw
       self.leakage = 50.9*1000 # uw
     elif:
@@ -188,7 +190,7 @@ class Tile(): # a.k.a. PE
     self.leakage = 0
     
     # statics
-    self.numMAC = nMAC
+    self.numMAC = _nMAC
     self.numBlock = 1   #???
     self.avgUtilization = 0
     self.totalEnergy = 0
@@ -204,9 +206,81 @@ class Tile(): # a.k.a. PE
     self.capacityWeightFIFO = _capacityWeightFIFO
     
   def calcPPA(self):
-    # [TODO] @jilan   
+    if self.nMAC == 4^2, self.widthMAC == 8, _dataType = 'INT':
+      # [TODO] @jilan
+      self.area = 0.01244113 * 10^6 # um^2
+      self.areaMAC = 10823.2932578604
+      # self.areaUB = 0
+      self.areaACC = 994.958642567901
+      # self.areaFIFO = 0
+      self.latencyPerMAC = 1/(700e6) # ns
+      self.power = 0.0059932084e6 # uw 
+      self.energyPerMAC = 0
+      self.latencyFIFO = 0
+      self.energyPerBitFIFO = 0
+      self.latencyUB = 0
+      self.energyPerBitUB = 0
+      self.latencyACC = 0
+      self.energyPerBitACC = 0
+      self.leakage = 0.0039094233 
+    
+    elif self.nMAC == 8^2, self.widthMAC == 8, _dataType = 'INT':
+      # [TODO] @jilan
+      self.area = 0.0481898566732414 * 10^6 # um^2
+      self.areaMAC = 43293.1730314416
+      # self.areaUB = 0
+      self.areaACC = 1989.92
+      # self.areaFIFO = 0
+      self.latencyPerMAC = 1/(700e6) # ns
+      self.power = 0.0234310697  # uw 
+      self.energyPerMAC = 0
+      self.latencyFIFO = 0
+      self.energyPerBitFIFO = 0
+      self.latencyUB = 0
+      self.energyPerBitUB = 0
+      self.latencyACC = 0
+      self.energyPerBitACC = 0
+      self.leakage = 0.0155812244  
+      
+    elif self.nMAC == 16^2, self.widthMAC == 8, _dataType = 'INT':
+      # [TODO] @jilan
+      self.area = 0.189610096796027 * 10^6 # um^2
+      self.areaMAC = 173172.692125766
+      # self.areaUB = 0
+      self.areaACC = 3979.83457027161
+      # self.areaFIFO = 0
+      self.latencyPerMAC = 1/(700e6) # ns
+      self.power = 0.0926427510  # uw 
+      self.energyPerMAC = 0
+      self.latencyFIFO = 0
+      self.energyPerBitFIFO = 0
+      self.latencyUB = 0
+      self.energyPerBitUB = 0
+      self.latencyACC = 0
+      self.energyPerBitACC = 0
+      self.leakage = 0.0625239600
+      
+    elif self.nMAC == 32^2, self.widthMAC == 8, _dataType = 'INT':
+      # [TODO] @jilan
+      self.area = 0.752141727390228 * 10^6 # um^2
+      self.areaMAC = 692690.768503066
+      # self.areaUB = 0
+      self.areaACC = 7959.66914054321
+      # self.areaFIFO = 0
+      self.latencyPerMAC = 1/(700e6) # ns
+      self.power = 0.3685079485   # uw 
+      self.energyPerMAC = 0
+      self.latencyFIFO = 0
+      self.energyPerBitFIFO = 0
+      self.latencyUB = 0
+      self.energyPerBitUB = 0
+      self.latencyACC = 0
+      self.energyPerBitACC = 0
+      self.leakage = 0.2502539651 
+    else:
+      assert(False), 'No acceptable paras for PE.'
     # circuit PPA according to the configuration and DC etc
-    assert(True)
+    # assert(True)
     
   def resetStatus(self):
     self.numMAC = 0
@@ -260,7 +334,7 @@ class NoC():
   # circuit PPA does not considerred at this point
   
   # comments_jilan: we only model the bw, the communication within PE are modeled by accumulate buffer
-  def __init__(self, _numTile = 0, _bandwidthPerTile = 0):
+  def __init__(self, _numTile = 0, _bandwidthPerTile = 2):
     # structure config
     self.numTile = _numTile
     self.bandwidthPerTile = _bandwidthPerTile
@@ -310,7 +384,7 @@ class TetrisArch():
     self.offMem = DRAM()
     self.fmapMem = SRAM()
     self.tile = Tile()
-    self.reorder = reorderDMA() # not used
+    # self.reorder = reorderDMA() # not used
     self.accBuf = SRAM()
     
     #statics
