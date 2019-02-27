@@ -69,16 +69,62 @@ class SRAM():
     # [TODO] @jilan
     # circuit PPA according to the configuration and CACTI etc
     if self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 64*1024:
-      self.area = 483662*_numBank # um2; is calculated by combanition of banks
+      self.area = 483662*self.numBank # um2; is calculated by combanition of banks
       # CACTI does not give write energy/time but access energy/time
-      self.readLatency = 0.2962*_numBank # ns
-      self.writeLatency = 0.2962*_numBank
+      self.readLatency = 0.2962 # ns
+      self.writeLatency = 0.2962
       self.readEnergyPerBank = 0.01967 # uw
-      self.readEnergy = 0.01967*_numBank
-      self.writeEnergy = 0.01967*_numBank
-      self.leakage = 14.6739*_numBank #uw
-    elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 64*1024:
-      assert(False), 'not provided yet'
+      self.readEnergy = 0.01967*self.numBank
+      self.writeEnergy = 0.01967*self.numBank
+      self.leakage = 14.6739e3*self.numBank #uw
+    elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 128*1024:
+      self.area = 1.006998 * 0.861028*10^6*self.numBank # um2; is calculated by combanition of banks
+      # CACTI does not give write energy/time but access energy/time
+      self.readLatency = 0.4675 # ns
+      self.writeLatency = 0.4675
+      self.readEnergyPerBank = 0.02716 # uw
+      self.readEnergy = 0.02716*self.numBank
+      self.writeEnergy = 0.02716*self.numBank
+      self.leakage = 30.4356e3*self.numBank #uw
+    elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 256*1024:
+      self.area = 1.006998 * 1.579929*10^6*self.numBank # um2; is calculated by combanition of banks
+      # CACTI does not give write energy/time but access energy/time
+      self.readLatency = 0.582776 # ns
+      self.writeLatency = 0.582776
+      self.readEnergyPerBank = 0.0351926 # uw
+      self.readEnergy = 0.0351926*self.numBank
+      self.writeEnergy = 0.0351926*self.numBank
+      self.leakage = 67.09e3*self.numBank #uw
+    elif self.numBank == 8 and self.widthPerBank == 1 and self.capacityPerBank == 512*1024:
+      self.area = 1.994496 * 1.774642*10^6*self.numBank # um2; is calculated by combanition of banks
+      # CACTI does not give write energy/time but access energy/time
+      self.readLatency = 0.7607 # ns
+      self.writeLatency = 0.7607
+      self.readEnergyPerBank = 0.046788 # uw
+      self.readEnergy = 0.046788*self.numBank
+      self.writeEnergy = 0.046788*self.numBank
+      self.leakage = 138.4e3*self.numBank #uw
+      
+    elif self.numBank == 16 and self.widthPerBank == 1 and self.capacityPerBank == 512*1024:
+      self.area = 2.640336 * 1.712695*10^6*self.numBank # um2; is calculated by combanition of banks
+      # CACTI does not give write energy/time but access energy/time
+      self.readLatency = 0.7623* # ns
+      self.writeLatency = 0.7623
+      self.readEnergyPerBank = 0.05771 # uw
+      self.readEnergy = 0.05771*self.numBank
+      self.writeEnergy = 0.05771*self.numBank
+      self.leakage = 60.87e3*self.numBank #uw
+      self.leakage = 60.87e3*self.numBank #uw
+      
+    elif self.numBank == 16 and self.widthPerBank == 1 and self.capacityPerBank == 1024*1024:
+      self.area = 2.6427*3.1487*10^6 # um2; is calculated by combanition of banks
+      # CACTI does not give write energy/time but access energy/time
+      self.readLatency = 1.0179*_numBank # ns
+      self.writeLatency = 1.0179_numBank
+      self.readEnergyPerBank = 0.09743 # uw
+      self.readEnergy = 0.09743*_numBank
+      self.writeEnergy = 0.09743*_numBank
+      self.leakage = 134.178e3*_numBank #uw
     else:
       assert(False), 'Unexpected SRAM configurations.'
   
