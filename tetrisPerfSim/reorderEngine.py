@@ -31,6 +31,7 @@ def AdrGen(layer, sram):
   blockList = layer.data
   P = 1 * 2  # padding
 
+
   if layer.type == 'conv':
     FMI_order_org = np.reshape(np.arange(FMI_C * (FM_H + P) * (FM_W + P)), (FMI_C, (FM_H + P), (FM_W + P))) % numBank
     FMI_order = np.zeros((FMI_C, FM_H * FM_W * Kw * Kh)).astype(int)
@@ -56,8 +57,8 @@ def AdrGen(layer, sram):
     FMI_adr.append(np.reshape(FMI_order[block.indexRow], -1))
     FMO_adr.append(np.reshape(FMO_order[block.indexCol], -1))
     if layer.type == 'conv':
-      W_adr.append(W_order[block.indexRow, block.indexCol, :, :])
+      W_adr.append((W_order[block.indexRow])[:, block.indexCol, :, :])
     else:
-      W_adr.append(W_order[block.indexRow, block.indexCol])
+      W_adr.append((W_order[block.indexRow])[:, block.indexCol])
 
   return FMI_adr, FMO_adr, W_adr
