@@ -185,15 +185,15 @@ class DRAM():
     if self.numChannel == 2 and self.standard == 'DDR4-2666' and  self.capacityPerChannel == 4e9:
       self.width = 16 # BYTE
       self.widthPerChannel = 8 # BYTE
-      self.BW = 21.3e9 * self.numChannle # BTYE/s
-      self.energyPerBit = 14.96875*0.001 * self.numChannle # nj/bit
-      self.readpower = 98.5*1000 * self.numChannle # uw
-      self.leakage = 54.0*1000 # uw
+      self.BW = 21.3e9 * self.numChannel # BTYE/s
+      self.energyPerBit = 14.96875*0.001 * self.numChannel # nj/bit
+      self.readpower = 98.5*1000 * self.numChannel # uw
+      self.leakage = 54.0*1000 * self.numChannel # uw
 
     elif self.numChannel == 1 and self.standard == 'DDR4-2666' and  self.capacityPerChannel == 8e9:
       self.width = 8 # BYTE
       self.widthPerChannel = 8 # BYTE
-      self.BW = 21.3e9 * self.numChannle # BTYE/s
+      self.BW = 21.3e9 * self.numChannel # BTYE/s
       self.energyPerBit = 18.03125*0.001 # nj/bit
       self.readpower = 115.4*1000 # uw
       self.leakage = 50.9*1000 # uw
@@ -201,7 +201,7 @@ class DRAM():
     elif self.numChannel == 2 and self.standard == 'DDR4-2400' and  self.capacityPerChannel == 4e9:
       self.width = 16 # BYTE
       self.widthPerChannel = 8 # BYTE
-      self.BW = 19.2*2e9 * self.numChannle # BTYE/s
+      self.BW = 19.2e9 * self.numChannel # BTYE/s
       self.energyPerBit = 2*15.578125*0.001 # nj/bit
       self.readpower = 99.7*1000*2 # uw
       self.leakage = 2*54.0*1000 # uw
@@ -209,7 +209,7 @@ class DRAM():
     elif self.numChannel == 1 and self.standard == 'DDR4-2400' and  self.capacityPerChannel == 8e9:
       self.width = 8 # BYTE
       self.widthPerChannel = 8 # BYTE
-      self.BW = 19.2e9 * self.numChannle # BTYE/s
+      self.BW = 19.2e9 * self.numChannel # BTYE/s
       self.energyPerBit = 18.203125*0.001 # nj/bit
       self.readpower = 116.5*1000 # uw
       self.leakage = 50.9*1000 # uw
