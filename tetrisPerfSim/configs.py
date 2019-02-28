@@ -142,9 +142,9 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
     }
 
     # type
-    if (i < 13 and select == 'vgg16') or (i < 6 and select == 'vgg8'):
+    if (i < 13 and select[0:5] == 'vgg16') or (i < 6 and select[0:4] == 'vgg8'):
       app.layers[i].type = 'conv'
-    elif (i >= 13 and select == 'vgg16') or (i >= 6 and select == 'vgg8'):
+    elif (i < 13 and select[0:5] == 'vgg16') or (i < 6 and select[0:4] == 'vgg8'):
       app.layers[i].type = 'fc'
     else:
       assert(False)
@@ -159,11 +159,11 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
     app.layers[i].dataWidth = 4
 
     # name
-    if (i < 13 and select == 'vgg16') or (i < 6 and select == 'vgg8'):
+    if (i < 13 and select[0:5] == 'vgg16') or (i < 6 and select[0:4] == 'vgg8'):
       app.layers[i].name = 'conv' + str(i + 1)
-    elif i >= 13 and select == 'vgg16':
+    elif i >= 13 and select[0:5] == 'vgg16':
       app.layers[i].name = 'fc' + str(i - 12)
-    elif i >= 6 and select == 'vgg8':
+    elif i >= 6 and select[0:4] == 'vgg8':
       app.layers[i].name = 'fc' + str(i - 5)
     else:
       assert(False)
@@ -176,3 +176,4 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
 
 
   return app 
+
