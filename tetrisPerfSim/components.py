@@ -9,7 +9,7 @@ including SRAM (Unified buffer for Fmap), DRAM (for Weight only, first Fmap assu
 Note: all latency is 'ns', energy is 'nj', power is 'uW', area is 'um2', data/width is 'BYTE', bandwidh is GB/s (B/ns)
 '''
 
-# @jilan: maintain this module
+# @jilan: maintain this module - hhh
 
 # @jilan
 class SRAM():
