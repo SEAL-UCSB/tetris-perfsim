@@ -11,6 +11,8 @@ Note: all latency is 'ns', energy is 'nj', power is 'uW', area is 'um2', data/wi
 
 # @jilan: maintain this module - hhh
 
+import numpy as np
+
 # @jilan
 class SRAM():
   # multi-bank SRAM. Could be NVM so we have both read/write configurations
@@ -459,7 +461,8 @@ class TetrisArch():
     self.numTile = _numTile # should be n^2 - maybe not, jilan
     self.sparseBlockSize = _sparseBlockSize # should be n^2 - maybe n
     self.sparseSource = _sparseSource # 'synthetic' or 'pyTorch'
-    
+    self.layerStats = np.zeros((2,200))
+    self.numLayer = 0
     
     # components creation
     self.noc = NoC()
@@ -487,8 +490,10 @@ class TetrisArch():
     self.sparseSource = _sparseSource # 'synthatic' or 'pyTorch'
       
   def resetStatus(self):
-    # self.totalLatency = 0
-    # self.totalEnergy = 0
+    self.layerStats = np.zeros((2,200))
+    self.numLayer = 0
+    self.totalLatency = 0
+    self.totalEnergy = 0
     self.tile.resetStatus()
     self.accBuf.resetStatus()
     self.offMem.resetStatus()
@@ -504,15 +509,22 @@ class TetrisArch():
     print "Unified Buffer (SRAM): ", self.fmapMem.capacity, "Bytes,"
     print "Accumulate Buffer (SRAM): ", self.accBuf.capacity, "Bytes,"
     print "Off-chip Memory (DRAM):", self.offMem.capacity/1e9, "GB",self.offMem.standard, "with ", self.offMem.numChannel, "channel(s)"
-    print "The bandwidth of NoC: ", self.noc.bandwidthTotal, "Bytes"
+    print "The bandwidth of NoC: ", self.noc.bandwidthTotal/1e9, "GB"
     print "============================================================="
     print " "
   
   def printResult(self, level): # input: int
     # [TODO] @jilan
-    print "==========the total energy and throughtput=========="
-    print "The total energy consumption is ", self.totalEnergy, "nj"
-    print "The system throughput is ", 1/self.totalLatency, "images / s"
-    
-    
-    
+    print "===========================Results==========================="
+    print "Summary:"
+    print "The total energy consumption: ", self.totalEnergy/1e3, "uj / image"
+    print "The system throughput: ", 1e9/self.totalLatency, "images / s"
+    print "The total area: ", self.fmapMem.area + self.tile.area * self.numTile + self.accBuf.area, "um^2"
+    print "    - Unified Buffer: ", self.fmapMem.area, "um^2"
+    print "    - Accumulate Buffer: ", self.accBuf.area, "um^2"
+    print "    - MACs: ", self.tile.areaMAC * self.numTile, "um^2"
+    print "    - Accumulators: ", self.tile.areaACC * self.numTile, "um^2"
+    print " "
+    print "======================Layer Statistics======================"
+    for k in range(self.numLayer):
+      print ("Layer - %2d:   %.3f uj   %.3f us" % (k, 1e3 * self.layerStats[0,k], 1e3 * self.layerStats[1,k]))
