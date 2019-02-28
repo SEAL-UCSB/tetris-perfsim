@@ -29,8 +29,8 @@ def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), [int] Byte; retur
   # we do not write DRAM - jilan 
   
   # calculate latency and energy
-  latency = dataAmount / memory.BW
-  energy = dataAmount * 8 * memory.energyPerBit + latency * memory.leakage * 1000
+  latency = dataAmount / memory.BW * 1e9 # ns
+  energy = dataAmount * 8 * memory.energyPerBit + latency * 1e-9 * memory.leakage *  #nj
   
   # update the stat in the component.DRAM()
   memory.totalLatency += latency
@@ -56,11 +56,11 @@ def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), list[int] ad
     # should be the same as PerfBUF (or simply call PerfBUF)
 
     if isREAD:
-      latency = memory.readLatency * numAccess
-      energy = memory.readEnergyPerBank * dataAmount + memory.leakage * latency
+      latency = memory.readLatency * numAccess # ns
+      energy = memory.readEnergyPerBank * dataAmount + memory.leakage * 1e3 * latency * 1e-9 # nj
     else:
       latency = memory.writeLatency * numAccess
-      energy = memory.writeEnergyPerBank * dataAmount + memory.leakage * latency
+      energy = memory.writeEnergyPerBank * dataAmount + memory.leakage * 1e3 * latency * 1e-9
     assert(True)
 
   elif(memory.adrHashScheme == 'modN'): # NOTE THAT SRAM model need to consider multi-bank parallelsim and conflict stuff
@@ -86,10 +86,10 @@ def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), list[int] ad
 
     if isREAD:
       latency = memory.readLatency * numConflictAccess
-      energy = memory.readEnergyPerBank * dataAmount + memory.leakage * latency
+      energy = memory.readEnergyPerBank * dataAmount + memory.leakage * 1e3 * latency  * 1e-9
     else:
       latency = memory.writeLatency * numConflictAccess
-      energy = memory.writeEnergyPerBank * dataAmount + memory.leakage * latency
+      energy = memory.writeEnergyPerBank * dataAmount + memory.leakage * 1e3 * latency  * 1e-9
     assert(True)
 
   else:
@@ -120,8 +120,8 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
   if isREAD:
     # calc latency and energy
     numRead = dataAmount / memory.width
-    latency = numRead * memory.readLatency
-    energy = numRead * memory.readEnergy + latency * memory.leakage
+    latency = numRead * memory.readLatency # ns
+    energy = numRead * memory.readEnergy + latency * 1e-9 * memory.leakage * 1e3
     
     # update the stat in the component.SRAM()
     memory.numRead += numRead
@@ -135,8 +135,8 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
   else:
     # calc latency and energy
     numWrite = dataAmount / memory.width
-    latency = numWrite * memory.writeLatency
-    energy = numWrite * memory.writeEnergy + latency * memory.leakage
+    latency = numWrite * memory.writeLatency # ns
+    energy = numWrite * memory.writeEnergy + latency * 1e-9 * memory.leakage * 1e3
     
     # update the stat in the component.SRAM()
     memory.numWrite += numWrite
@@ -153,7 +153,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
 def PerfNOC(noc, dataAmount): # inputs: components.NoC(), [int] Byte; return (ns, nj)
   # [TODO] @jilan: calc reading NoC, update statics in noc
   ener = noc.energyPerByte*dataAmount
-  latency = dataAmount/noc.bandwidthTotal
+  latency = dataAmount/noc.bandwidthTotal*1e9
   noc.dataAmount += dataAmount
   noc.totalEnergy += noc.energyPerByte*dataAmount
   # we assume that the data come from all the PEs
@@ -173,8 +173,8 @@ def PerfTILE(tile, blocksize, numtask): # inputs: components.Tile(), [int] nxn b
   if Ture:
     tile.numBlock += 1
     tile.avgUtilization = 1
-    latency = numtask/sqrt(blocksize)*tile.latencyPerMAC
-    tile.totalEnergy += (tile.power+tile.leakage)*latency
+    latency = numtask/sqrt(blocksize)*tile.latencyPerMAC #ns
+    tile.totalEnergy += (tile.power+tile.leakage * 1e3)*latency*1e-9 #nj
     self.totalLatency += latency
   # dertermined by Tianqi's simulator
   
