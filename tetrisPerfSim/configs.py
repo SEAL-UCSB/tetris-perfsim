@@ -144,7 +144,7 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
     # type
     if (i < 13 and select[0:5] == 'vgg16') or (i < 6 and select[0:4] == 'vgg8'):
       app.layers[i].type = 'conv'
-    elif (i < 13 and select[0:5] == 'vgg16') or (i < 6 and select[0:4] == 'vgg8'):
+    elif (i >= 13 and select[0:5] == 'vgg16') or (i >= 6 and select[0:4] == 'vgg8'):
       app.layers[i].type = 'fc'
     else:
       assert(False)
