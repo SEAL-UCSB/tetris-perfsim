@@ -128,7 +128,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     memory.totalReadLatency += latency
     memory.totalReadEnergy += energy
     memory.totalLatency += latency
-    memory.numAccess += dataAmount/memory.width
+    #memory.numAccess += dataAmount/memory.width
     memory.totalEnergy = memory.accessEnergy*memory.numAccess
     memory.totalReadEnergy += memory.accessEnergy*memory.numAccess
     
@@ -143,7 +143,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     memory.totalWreteLatency += latency
     memory.totalWriteEnergy += energy
     memory.totalLatency += latency
-    memory.numAccess += dataAmount/memory.width
+    #memory.numAccess += dataAmount/memory.width
     memory.totalEnergy = memory.accessEnergy*memory.numAccess
     memory.totalWriteEnergy += memory.accessEnergy*memory.numAccess
     
@@ -206,7 +206,8 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
     PerfDRAM(tetrisArch.offMem, totalDataSize)
     
     # calc reading Fmap from FmapMem, update statics in tetrisArch
-    adr_readFmapMem = reorderEngine.AdrGen(partialLayer.fmapFromFmapMem['dataAdr'], tetrisArch.fmapMem)
+    #adr_readFmapMem = reorderEngine.AdrGen(partialLayer.fmapFromFmapMem['dataAdr'], tetrisArch.fmapMem)
+    adr_readFmapMem = partialLayer.fmapFromFmapMem['dataAdr']
     PerfSRAM(tetrisArch.fmapMem, adr_readFmapMem, True)
     
     # calc reading Fmap from accBuffer for accumulation, update statics in tetrisArch
