@@ -21,6 +21,7 @@ Write the SRAM with the index
 #@liu: maintain this module
 from tetrisPerfSim import scheduler, reorderEngine
 import numpy as np
+import math
 
 #@jilan
 def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), [int] Byte; return (ns, nj)
@@ -128,9 +129,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     memory.totalReadLatency += latency
     memory.totalReadEnergy += energy
     memory.totalLatency += latency
-    #memory.numAccess += dataAmount/memory.width
-    memory.totalEnergy = memory.accessEnergy*memory.numAccess
-    memory.totalReadEnergy += memory.accessEnergy*memory.numAccess
+    memory.totalEnergy += energy
     
   else:
     # calc latency and energy
@@ -143,9 +142,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     memory.totalWreteLatency += latency
     memory.totalWriteEnergy += energy
     memory.totalLatency += latency
-    #memory.numAccess += dataAmount/memory.width
-    memory.totalEnergy = memory.accessEnergy*memory.numAccess
-    memory.totalWriteEnergy += memory.accessEnergy*memory.numAccess
+    memory.totalEnergy += energy
     
 #  assert(True)
 
@@ -169,13 +166,23 @@ def PerfTILE(tile, blocksize, numtask): # inputs: components.Tile(), [int] nxn b
   # e.g., PE with 128x128 MAC with suffer with 1x1 block size
   
   # in current version, we do not consider the utilization and block size
-  assert(blocksize == nMAC), 'in current version, we do not consider the utilization and block size'
-  if Ture:
-    tile.numBlock += 1
-    tile.avgUtilization = 1
-    latency = numtask/sqrt(blocksize)*tile.latencyPerMAC #ns
+  # print blocksize, tile.nMAC
+  # assert(blocksize == tile.nMAC), 'in current version, we do not consider the utilization and block size'
+  
+  if blocksize == tile.nMAC:
+    numCalc = numtask/math.sqrt(blocksize)
+    tile.avgUtilization = (tile.numBlock*tile.avgUtilization + numCalc)/(tile.numBlock+numCalc)
+    tile.numBlock += numCalc
+    latency = numtask/math.sqrt(blocksize)*tile.latencyPerMAC #ns
     tile.totalEnergy += (tile.power+tile.leakage * 1e3)*latency*1e-9 #nj
-    self.totalLatency += latency
+    tile.totalLatency += latency
+  else:
+    numCalc = numtask/math.sqrt(blocksize)
+    tile.avgUtilization = (tile.numBlock*tile.avgUtilization + numCalc)/(tile.numBlock+numCalc)
+    tile.numBlock += numCalc
+    latency = numtask/math.floor(math.sqrt(blocksize))*tile.latencyPerMAC #ns
+    tile.totalEnergy += (tile.power+tile.leakage * 1e3)*latency*1e-9 #nj
+    tile.totalLatency += latency
   # dertermined by Tianqi's simulator
   
   # calc all blocks
@@ -215,7 +222,8 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
     PerfBUF(tetrisArch.accBuf, totalDataSize, True)
       
     # calc reading Fmap from PE (Fmap reused by two tiles), update statics in tetrisArch
-    numtask = (partialLayer.accFmapInNoc['byte'] + partialLayer.fmapToFmapMem['byte'] + partialLayer.fampToAccBuf['byte'])/tetrisArch.numTile # [TODO] @jilan: figure out num of blocks to compute from partialLayer
+    numtask = (partialLayer.accFmapInNoc['byte'] + partialLayer.fmapToFmapMem['byte'] + partialLayer.fmapToAccBuf['byte'])/tetrisArch.numTile # [TODO] @jilan: figure out num of blocks to compute from partialLayer
+    #print layer.numBlockH, layer.numBlockW
     PerfTILE(tetrisArch.tile, layer.blockSizeH * layer.blockSizeW, numtask) 
     
     # calc writing Fmap to FmapMem, update statics in tetrisArch
