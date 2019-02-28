@@ -30,7 +30,7 @@ def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), [int] Byte; retur
   
   # calculate latency and energy
   latency = dataAmount / memory.BW * 1e9 # ns
-  energy = dataAmount * 8 * memory.energyPerBit + latency * 1e-9 * memory.leakage *  #nj
+  energy = dataAmount * 8 * memory.energyPerBit + latency * 1e-9 * memory.leakage * 1e3 #nj
   
   # update the stat in the component.DRAM()
   memory.totalLatency += latency
