@@ -206,7 +206,7 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
     PerfDRAM(tetrisArch.offMem, totalDataSize)
     
     # calc reading Fmap from FmapMem, update statics in tetrisArch
-    adr_readFmapMem = reorderEngine.AdrGen(partialLayer.fmapFromFmapMem['data'])
+    adr_readFmapMem = reorderEngine.AdrGen(partialLayer.fmapFromFmapMem['dataAdr'], tetrisArch.fmapMem)
     PerfSRAM(tetrisArch.fmapMem, adr_readFmapMem, True)
     
     # calc reading Fmap from accBuffer for accumulation, update statics in tetrisArch
