@@ -139,7 +139,7 @@ def PerfBUF(memory, dataAmount, isREAD): # inputs: components.SRAM(), [int] Byte
     
     # update the stat in the component.SRAM()
     memory.numWrite += numWrite
-    memory.totalWreteLatency += latency
+    memory.totalWriteLatency += latency
     memory.totalWriteEnergy += energy
     memory.totalLatency += latency
     memory.totalEnergy += energy
@@ -197,8 +197,8 @@ def RoofLine(tetrisArch): # inputs: components.TetrisArch()
   # [TODO] @jilan: min{ total-PE, total-NOC, total-FmapMem, total-ReorderBuf, total-DRAM }, energy add them all
   # update the TetrisArch statics
   # NOTE: should be accumulative
-  self.totalEnergy += self.noc.totalEnergy + self.offMem.totalEnergy + self.fmapMem.totalEnergy + self.tile.totalEnergy*self.numTile+self.accBuf.totalEnergy
-  self.totalLatency += max(self.noc.totalLatency , self.offMem.totalLatency , self.fmapMem.totalLatency , self.tile.totalLatency , self.accBuf.totalLatency)
+  tetrisArch.totalEnergy += tetrisArch.noc.totalEnergy + tetrisArch.offMem.totalEnergy + tetrisArch.fmapMem.totalEnergy + tetrisArch.tile.totalEnergy*tetrisArch.numTile+tetrisArch.accBuf.totalEnergy
+  tetrisArch.totalLatency += max(tetrisArch.noc.totalLatency , tetrisArch.offMem.totalLatency , tetrisArch.fmapMem.totalLatency , tetrisArch.tile.totalLatency , tetrisArch.accBuf.totalLatency)
   
   assert(True)
 
@@ -227,12 +227,13 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
     PerfTILE(tetrisArch.tile, layer.blockSizeH * layer.blockSizeW, numtask) 
     
     # calc writing Fmap to FmapMem, update statics in tetrisArch
-    adr_writeFmapMem = reorderEngine.AdrGen(partialLayer.fmapToFmapMem['data'])
+    # adr_writeFmapMem = reorderEngine.AdrGen(partialLayer.fmapToFmapMem['data'])
+    adr_writeFmapMem = partialLayer.fmapToFmapMem['dataAdr']
     PerfSRAM(tetrisArch.fmapMem, adr_writeFmapMem, False)
 
     # calc writting Fmap from accBuffer for accumulation, update statics in tetrisArch
     totalDataSize = partialLayer.fmapToAccBuf['byte']
-    PerfBUF(tetrisArch.reorderBuf, totalDataSize, False)
+    PerfBUF(tetrisArch.accBuf, totalDataSize, False)
     
     # update the reorder engine
     totalDataSize = partialLayer.fmapFromFmapMem['byte'] + partialLayer.fmapToFmapMem['byte']
