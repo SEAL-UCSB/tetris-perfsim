@@ -16,6 +16,8 @@ Reading the SRAM with block weight index (multi-bank with effective bank conflic
 Write the SRAM with the index
 '''
 
+# Note: the latency should be in ns. the energy should be in nj
+
 #@liu: maintain this module
 from tetrisPerfSim import scheduler, reorderEngine
 import numpy as np
@@ -23,9 +25,10 @@ import numpy as np
 #@jilan
 def PerfDRAM(memory, dataAmount): # inputs: components.DRAM(), [int] Byte; return (ns, nj)
   # [TODO] @jilan: calc reading/write DRAM, update statics in memory
-  # We assume the weight is formated with block and index offline 
+  # We assume the weight is formated with block and index offline
+  # we do not write DRAM - jilan 
   
-  # calc latency and energy
+  # calculate latency and energy
   latency = dataAmount / memory.BW
   energy = dataAmount * 8 * memory.energyPerBit + latency * memory.leakage * 1000
   
