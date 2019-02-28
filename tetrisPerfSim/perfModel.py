@@ -69,9 +69,11 @@ def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), list[int] ad
     # check memory.reorderBufLen
 
     numConflictAccess = 0
+    # numRegularAccess = 0
 
     #reshape the address as a vector
     adrOrder = np.reshape(np.asarray(address).T, -1)
+    # numRegularAccess = adrOrder.size/numBank
     for i in range(numAccess):
       bankList = []
       numConflict = []
@@ -87,9 +89,11 @@ def PerfSRAM(memory, address, isREAD): # inputs: components.SRAM(), list[int] ad
 
     if isREAD:
       latency = memory.readLatency * numConflictAccess
+      memory.extraLatency += memory.readLatency * (numConflictAccess - numAccess)
       energy = memory.readEnergyPerBank * dataAmount + memory.leakage * 1e3 * latency  * 1e-9
     else:
       latency = memory.writeLatency * numConflictAccess
+      memory.extraLatency += memory.readLatency * (numConflictAccess - numAccess)
       energy = memory.writeEnergyPerBank * dataAmount + memory.leakage * 1e3 * latency  * 1e-9
     assert(True)
 
@@ -199,6 +203,7 @@ def RoofLine(tetrisArch): # inputs: components.TetrisArch()
   # NOTE: should be accumulative
   tetrisArch.totalEnergy += tetrisArch.noc.totalEnergy + tetrisArch.offMem.totalEnergy + tetrisArch.fmapMem.totalEnergy + tetrisArch.tile.totalEnergy*tetrisArch.numTile+tetrisArch.accBuf.totalEnergy
   tetrisArch.totalLatency += max(tetrisArch.noc.totalLatency , tetrisArch.offMem.totalLatency , tetrisArch.fmapMem.totalLatency , tetrisArch.tile.totalLatency , tetrisArch.accBuf.totalLatency)
+  tetrisArch.conflictLatency += tetrisArch.fmapMem.extraLatency
   
   assert(True)
 

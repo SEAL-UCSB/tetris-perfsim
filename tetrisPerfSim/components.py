@@ -46,6 +46,8 @@ class SRAM():
     self.readWritePerBank = 0 # uw
     
     # statics initialization
+    self.extraEnergy = 0
+    self.extraLatency = 0
     self.numRead = 0
     self.numWrite = 0
     self.numBankConflict = 0
@@ -144,6 +146,8 @@ class SRAM():
     self.numRead = 0
     self.numWrite = 0
     self.numBankConflict = 0
+    self.extraEnergy = 0
+    self.extraLatency = 0
     self.avgBW = 0
     self.avgCapacity = 0
     self.totalReadEnergy = 0
@@ -475,6 +479,7 @@ class TetrisArch():
     #statics
     self.totalLatency = 0
     self.totalEnergy = 0
+    self.conflictLatency = 0
     
     # asserts [TODO] @jilan
     assert(self.sparseBlockSize == self.tile.nMAC), 'sparse block size should be consisant with Tile size'
@@ -524,6 +529,7 @@ class TetrisArch():
     print "    - Accumulate Buffer: ", self.accBuf.area, "um^2"
     print "    - MACs: ", self.tile.areaMAC * self.numTile, "um^2"
     print "    - Accumulators: ", self.tile.areaACC * self.numTile, "um^2"
+    print "Bank Conflict / Total Latency:", self.conflictLatency/self.totalLatency
     print " "
     print "======================Layer Statistics======================"
     for k in range(self.numLayer):
