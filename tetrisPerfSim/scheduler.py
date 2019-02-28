@@ -70,7 +70,7 @@ def Partition(tetrisArch, layer): #input: components.TetrisArch(), traceGen.Laye
       finishedBlocks.append(layer.data[j].name)
 
       # weight information
-      partition[i].weight['byte'] += W_adr.size * dataWidth
+      partition[i].weight['byte'] += W_adr[j].size * dataWidth
 
       # input FM from mem
       if layer.data[j].coordRow not in iterBlockRow:
