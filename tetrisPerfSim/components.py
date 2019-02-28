@@ -186,17 +186,17 @@ class DRAM():
       self.width = 16 # BYTE
       self.widthPerChannel = 8 # BYTE
       self.BW = 21.3e9 * self.numChannel # BTYE/s
-      self.energyPerBit = 14.96875*0.001 * self.numChannel # nj/bit
-      self.readpower = 98.5*1000 * self.numChannel # uw
-      self.leakage = 54.0*1000 * self.numChannel # uw
+      self.energyPerBit = 100/6.4*0.001 * self.numChannel # nj/bit
+      self.readpower = 100*1000 * self.numChannel # uw
+      self.leakage = 56.2*1000 * self.numChannel # uw
 
     elif self.numChannel == 1 and self.standard == 'DDR4-2666' and  self.capacityPerChannel == 8e9:
       self.width = 8 # BYTE
       self.widthPerChannel = 8 # BYTE
       self.BW = 21.3e9 * self.numChannel # BTYE/s
-      self.energyPerBit = 18.03125*0.001 # nj/bit
-      self.readpower = 115.4*1000 # uw
-      self.leakage = 50.9*1000 # uw
+      self.energyPerBit = 116.6/64*0.001 # nj/bit
+      self.readpower = 116.6*1000 # uw
+      self.leakage = 53.4*1000 # uw
 
     elif self.numChannel == 2 and self.standard == 'DDR4-2400' and  self.capacityPerChannel == 4e9:
       self.width = 16 # BYTE
@@ -281,7 +281,7 @@ class Tile(): # a.k.a. PE
       # self.areaUB = 0
       self.areaACC = 994.958642567901
       # self.areaFIFO = 0
-      self.latencyPerMAC = 1/(700e6) # ns
+      self.latencyPerMAC = 1e9/(700e6) # ns
       self.power = 0.0059932084e6 # uw 
       self.energyPerMAC = 0
       self.latencyFIFO = 0
