@@ -9,7 +9,8 @@ from tetrisPerfSim import configs, perfModel
 #@liu
 def main():
   #[TODO] @liu: setup the pool
-  hardwarePool = ['dense']
+  hardwarePool = ['block-sparse']
+  # hardwarePool = ['dense']
   appPool = ['vgg8']
   for selectHW in hardwarePool:
     hardware = configs.DesignSpaceExploration(selectHW)
@@ -25,7 +26,7 @@ def main():
           hardware.layerStats[1,0] = hardware.totalLatency
         else:
           hardware.layerStats[0, hardware.numLayer] = hardware.totalEnergy - hardware.layerStats[0, hardware.numLayer - 1]
-          hardware.layerStats[1, hardware.numLayer] = hardware.totalLatency - hardware.layerStats[0, hardware.numLayer - 1]
+          hardware.layerStats[1, hardware.numLayer] = hardware.totalLatency - hardware.layerStats[1, hardware.numLayer - 1]
         hardware.numLayer += 1
         #hardware.reset()
         #hardware.printResult(2)

@@ -37,6 +37,8 @@ class PartialLayer():
     # partial results need to be accumuated in later partial layer, store it in ReorderBuf without convert/reorder
     self.fmapToAccBuf = {'byte':0, 'dataAdr':[]} # 'byte': data size; 'data': not used, list of traceGen.DataBlock()
 
+    self.numBlock = 0
+
 #@ling
 def Partition(tetrisArch, layer): #input: components.TetrisArch(), traceGen.Layer(); output: [PartialLayer()]
   partition = [] # list of ParialLayer
@@ -55,6 +57,10 @@ def Partition(tetrisArch, layer): #input: components.TetrisArch(), traceGen.Laye
 
   for i in range(numIter):
     partition.append(PartialLayer())
+    if i < numIter - 1 :
+      partition[i].numBlock = numTile
+    else:
+      partition[i].numBlock = numDataBlock - (numIter - 1) * numTile
 
     # get the start idx and end idx of blocks in block list
     startID = i * numTile

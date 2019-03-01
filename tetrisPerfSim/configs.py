@@ -19,13 +19,13 @@ def DesignSpaceExploration(select): # input: int/string; output: components.Tetr
   tetris = components.TetrisArch()
   # [TODO]: @liu
   if select == 'block-sparse':
-    tetris.setup()  #[TODO] @liu setup specific parameters
-    tetris.noc.setup()   #[TODO] @liu setup specific parameters
-    tetris.offMem.setup()   #[TODO] @liu setup specific parameters
-    tetris.fmapMem.setup()   #[TODO] @liu setup specific parameters
-    tetris.tile.setup()   #[TODO] @liu setup specific parameters
-    #tetris.reorder.setup()   #[TODO] @liu setup specific parameters
-    tetris.accBuf.setup()   #[TODO] @liu setup specific parameters
+    tetris.setup('block-sparse', 512, 16, 'synthetic')
+    tetris.noc.setup(64, 2e9)   # 2 byte/cycle
+    tetris.offMem.setup(1,'DDR4-2666', 8e9)   # @Shuangchen Do we model DRAM?
+    tetris.fmapMem.setup(16, 1, 512*1024, 'modN')
+    tetris.tile.setup(16, 8, 'INT', 256*2, 32*32*2, 256*2)   # BYTE
+    #tetris.reorder.setup(64, 8)
+    tetris.accBuf.setup(8, 2, 256*1024, 'ideal')
     tetris.noc.calcPPA()
     tetris.noc.resetStatus()
     tetris.offMem.calcPPA()  
@@ -40,19 +40,20 @@ def DesignSpaceExploration(select): # input: int/string; output: components.Tetr
     tetris.accBuf.resetStatus()
     tetris.resetStatus()
   elif select == 'dense':
-    tetris.setup('block-sparse', 64, 64, 'synthetic')
+    tetris.setup('dense', 512, 16, 'synthetic')
     tetris.noc.setup(64, 2e9)   # 2 byte/cycle
-    tetris.offMem.setup(2,'DDR4-2666', 4e9)   # @Shuangchen Do we model DRAM?
-    tetris.fmapMem.setup(16, 1, 512*1024)
+    tetris.offMem.setup(1,'DDR4-2666', 8e9)   # @Shuangchen Do we model DRAM?
+    tetris.fmapMem.setup(16, 1, 512*1024, 'ideal')
     tetris.tile.setup(16, 8, 'INT', 256*2, 32*32*2, 256*2)   # BYTE
     #tetris.reorder.setup(64, 8)
-    tetris.accBuf.setup(8, 1, 256*1024)
+    tetris.accBuf.setup(8, 2, 256*1024, 'ideal')
     tetris.noc.calcPPA()
     tetris.noc.resetStatus()
     tetris.offMem.calcPPA()  
     tetris.offMem.resetStatus() 
     tetris.fmapMem.calcPPA()  
-    tetris.fmapMem.resetStatus() 
+    tetris.fmapMem.resetStatus()
+    # print (tetris.fmapMem.readLatency, tetris.fmapMem.readEnergyPerBank, tetris.fmapMem.leakage) 
     tetris.tile.calcPPA()   
     tetris.tile.resetStatus()
     #tetris.reorder.calcPPA()   
@@ -124,8 +125,11 @@ def Benchmarking(select, hardware): # input: int/string, component.TetrisArch(),
       model_info = json.load(f)['vgg8']
     app.name = select
     app.numLayer = 8
-  elif select == 'resnet152':
-    assert(False)
+  elif select == 'vgg8_dense':
+    with open('configs/vgg8_dense.json', 'r') as f:
+      model_info = json.load(f)['vgg8_dense']
+    app.name = select
+    app.numLayer = 8
   else:
     assert(False)
 
