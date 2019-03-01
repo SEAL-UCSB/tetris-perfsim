@@ -335,6 +335,7 @@ class DRAM():
       self.energyPerBit = 100/6.4*0.001 * self.numChannel # nj/bit
       self.readpower = 100*1000 * self.numChannel # uw
       self.leakage = 56.2*1000 * self.numChannel # uw
+      # self.leakage = 0 * self.numChannel # uw
 
     elif self.numChannel == 1 and self.standard == 'DDR4-2666' and  self.capacityPerChannel == 8e9:
       self.width = 8 # BYTE
@@ -343,6 +344,7 @@ class DRAM():
       self.energyPerBit = 116.6/64*0.001 # nj/bit
       self.readpower = 116.6*1000 # uw
       self.leakage = 53.4*1000 # uw
+      # self.leakage = 0 * self.numChannel # uw
 
     elif self.numChannel == 2 and self.standard == 'DDR4-2400' and  self.capacityPerChannel == 4e9:
       self.width = 16 # BYTE
@@ -351,6 +353,7 @@ class DRAM():
       self.energyPerBit = 2*15.578125*0.001 # nj/bit
       self.readpower = 99.7*1000*2 # uw
       self.leakage = 2*54.0*1000 # uw
+      # self.leakage = 0 * self.numChannel # uw
 
     elif self.numChannel == 1 and self.standard == 'DDR4-2400' and  self.capacityPerChannel == 8e9:
       self.width = 8 # BYTE
@@ -359,6 +362,7 @@ class DRAM():
       self.energyPerBit = 18.203125*0.001 # nj/bit
       self.readpower = 116.5*1000 # uw
       self.leakage = 50.9*1000 # uw
+      # self.leakage = 0 * self.numChannel # uw
     else:
       assert(False), 'Unexpected DRAM configuration.'
     
@@ -423,10 +427,11 @@ class Tile(): # a.k.a. PE
   def calcPPA(self):
     if self.nMAC == 16 and self.widthMAC == 8 and self.dataType == 'INT':
       # [TODO] @jilan
-      self.area = 0.01244113e6 * (22/28)**2 # um^2
-      self.areaMAC = 10823.2932578604 * (22/28)**2
+      self.area = ((22.0/28)**2)*0.01244113e6  # um^2
+      print self.area
+      self.areaMAC = 10823.2932578604 * (22.0/28)**2
       # self.areaUB = 0
-      self.areaACC = 994.958642567901 * (22/28)**2
+      self.areaACC = 994.958642567901 * (22.0/28)**2
       # self.areaFIFO = 0
       self.latencyPerMAC = 1e9/(700e6) # ns
       self.power = 0.0059932084e6 * (0.8/0.86)**2 # uw 
@@ -441,13 +446,13 @@ class Tile(): # a.k.a. PE
     
     elif self.nMAC == 64 and self.widthMAC == 8 and self.dataType == 'INT':
       # [TODO] @jilan
-      self.area = 0.0481898566732414e6 * (22/28)**2 # um^2
-      self.areaMAC = 43293.1730314416 * (22/28)**2
+      self.area = 0.0481898566732414e6 * (22.0/28)**2 # um^2
+      self.areaMAC = 43293.1730314416 * (22.0/28)**2
       # self.areaUB = 0
-      self.areaACC = 1989.92 * (22/28)**2
+      self.areaACC = 1989.92 * (22.0/28)**2
       # self.areaFIFO = 0
-      self.latencyPerMAC = 1/(700e6)  * (0.8/0.86)**2# ns
-      self.power = 0.0234310697e6  # uw 
+      self.latencyPerMAC = 1/(700e6)# ns
+      self.power = 0.0234310697e6   * (0.8/0.86)**2 # uw 
       self.energyPerMAC = 0
       self.latencyFIFO = 0
       self.energyPerBitFIFO = 0
@@ -459,10 +464,10 @@ class Tile(): # a.k.a. PE
       
     elif self.nMAC == 256 and self.widthMAC == 8 and dataType == 'INT':
       # [TODO] @jilan
-      self.area = 0.189610096796027 * 10^6  * (22/28)**2# um^2
-      self.areaMAC = 173172.692125766 * (22/28)**2
+      self.area = 0.189610096796027 * 10^6  * (22.0/28)**2# um^2
+      self.areaMAC = 173172.692125766 * (22.0/28)**2
       # self.areaUB = 0
-      self.areaACC = 3979.83457027161 * (22/28)**2
+      self.areaACC = 3979.83457027161 * (22.0/28)**2
       # self.areaFIFO = 0
       self.latencyPerMAC = 1/(700e6) # ns
       self.power = 0.0926427510e6  * (0.8/0.86)**2 # uw 
@@ -477,10 +482,10 @@ class Tile(): # a.k.a. PE
       
     elif self.nMAC == 1024 and self.widthMAC == 8 and self.dataType == 'INT':
       # [TODO] @jilan
-      self.area = 0.752141727390228e6 * (22/28)**2 # um^2
-      self.areaMAC = 692690.768503066 * (22/28)**2
+      self.area = 0.752141727390228e6 * (22.0/28)**2 # um^2
+      self.areaMAC = 692690.768503066 * (22.0/28)**2
       # self.areaUB = 0
-      self.areaACC = 7959.66914054321 * (22/28)**2
+      self.areaACC = 7959.66914054321 * (22.0/28)**2
       # self.areaFIFO = 0
       self.latencyPerMAC = 1/(700e6) # ns
       self.power = 0.3685079485e6  * (0.8/0.86)**2  # uw 
@@ -495,6 +500,8 @@ class Tile(): # a.k.a. PE
     else:
       print('For PE, # MAC:', self.nMAC, 'width of a MAC:', self.widthMAC,'data type:', self.dataType)
       assert(False), 'No acceptable paras for PE.'
+    
+    #self.leakage = 0
     # circuit PPA according to the configuration and DC etc
     # assert(True)
     
@@ -663,11 +670,11 @@ class TetrisArch():
     print "The system throughput: ", 1e9/self.totalLatency, "images / s"
 
     print "The total energy consumption: ", self.totalEnergy/1e3, "uj / image"
-    print "  - DRAM              : %.2f%%" % (100 * self.offMem.wholeEnergy/self.totalEnergy)
-    print "  - Unified Buffer    : %.2f%%" % (100 * self.fmapMem.wholeEnergy/self.totalEnergy)
-    print "  - Accumulate Buffer : %.2f%%:" % (100 * self.accBuf.wholeEnergy/self.totalEnergy)
-    print "  - PEs               : %.2f%%" % (100 * self.numTile * self.tile.wholeEnergy/self.totalEnergy)
-    print "  - NoC               : %.2f%%" % (100 * self.noc.wholeEnergy/self.totalEnergy)
+    print "  - DRAM              : %.3f%%" % (100 * self.offMem.wholeEnergy/self.totalEnergy)
+    print "  - Unified Buffer    : %.3f%%" % (100 * self.fmapMem.wholeEnergy/self.totalEnergy)
+    print "  - Accumulate Buffer : %.3f%%:" % (100 * self.accBuf.wholeEnergy/self.totalEnergy)
+    print "  - PEs               : %.3f%%" % (100 * self.numTile * self.tile.wholeEnergy/self.totalEnergy)
+    print "  - NoC               : %.3f%%" % (100 * self.noc.wholeEnergy/self.totalEnergy)
 
 
     totalarea = self.fmapMem.area + self.tile.area * self.numTile + self.accBuf.area
@@ -676,6 +683,7 @@ class TetrisArch():
     print("    - Accumulate Buffer (%.2f%%): %.2fum^2" % (100 * self.accBuf.area/totalarea, self.accBuf.area))
     print("    - MACs              (%.2f%%): %.2fum^2" % (100 * self.tile.areaMAC * self.numTile/totalarea, self.tile.areaMAC * self.numTile))
     print("    - Accumulators      (%.2f%%): %.2fum^2" % (100 * self.tile.areaACC * self.numTile/totalarea, self.tile.areaACC * self.numTile))
+    print("    - PEs               (%.2f%%): %.2fum^2" % (100 * self.tile.area * self.numTile/totalarea, self.tile.area * self.numTile))
 
     print "Bank Conflict / Total Latency:", self.conflictLatency/self.totalLatency
     print " "

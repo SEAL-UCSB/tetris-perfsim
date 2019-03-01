@@ -188,17 +188,17 @@ def PerfTILE(tile, blocksize, numtask): # inputs: components.Tile(), [int] nxn b
     tile.avgUtilization = (tile.numBlock*tile.avgUtilization + numCalc)/(tile.numBlock+numCalc)
     tile.numBlock += numCalc
     latency = numtask/math.sqrt(blocksize)*tile.latencyPerMAC #ns
-    tile.totalEnergy += (tile.power+tile.leakage * 1e3)*latency*1e-9 #nj
+    tile.totalEnergy += (tile.power+tile.leakage) * 1e3*latency*1e-9 #nj
     tile.totalLatency += latency
-    tile.wholeEnergy += (tile.power+tile.leakage * 1e3)*latency*1e-9
+    tile.wholeEnergy += (tile.power+tile.leakage) * 1e3*latency*1e-9
   else:
     numCalc = numtask/math.sqrt(blocksize)
     tile.avgUtilization = (tile.numBlock*tile.avgUtilization + numCalc)/(tile.numBlock+numCalc)
     tile.numBlock += numCalc
     latency = numtask/math.floor(math.sqrt(blocksize))*tile.latencyPerMAC #ns
-    tile.totalEnergy += (tile.power+tile.leakage * 1e3)*latency*1e-9 #nj
+    tile.totalEnergy += (tile.power+tile.leakage) * 1e3*latency*1e-9 #nj
     tile.totalLatency += latency
-    tile.wholeEnergy += (tile.power+tile.leakage * 1e3)*latency*1e-9
+    tile.wholeEnergy += (tile.power+tile.leakage) * 1e3*latency*1e-9
   # dertermined by Tianqi's simulator
   
   # calc all blocks
@@ -229,7 +229,7 @@ def Sim(tetrisArch, layer): # inputs: components.TetrisArch(), traceGen.Layer()
   assert(tetrisArch.fmapMem.totalEnergy == 0)
   assert(tetrisArch.tile.totalEnergy == 0)
   assert(tetrisArch.accBuf.totalEnergy == 0)
-  print layer.numDataBlock
+  # print layer.numDataBlock
   partition = scheduler.Partition(tetrisArch, layer)
   for partialLayer in partition:
     scheduler.GenFmapRequests(partialLayer)
