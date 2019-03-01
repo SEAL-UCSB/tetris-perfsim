@@ -1,0 +1,4 @@
+[submodule "tetris"]
+	path = tetris
+	url = https://github.com/CRAFT-THU/tetris.git
+	branch = master
